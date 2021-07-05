@@ -1,0 +1,42 @@
+{
+    "compilerOptions": {
+        "target": "es2017",
+        "module": "commonjs",
+        "moduleResolution": "node",
+        "emitDecoratorMetadata": true,
+        "experimentalDecorators": true,
+        "allowSyntheticDefaultImports": true,
+        "alwaysStrict": true,
+        "sourceMap": true,
+        "noEmit": false,
+        "noEmitHelpers": false,
+        "importHelpers": true,
+        "strictNullChecks": false,
+        "allowUnreachableCode": true,
+        "lib": [
+            "es6"
+        ],
+        "typeRoots": [
+            "node_modules/@types"
+        ],
+        "types": [
+            "cli-color",
+            "lodash",
+            "mocha",
+            "node",
+            "should"
+        ],
+        "outDir": "./build",
+        "rootDir": "./src"
+    },
+    "exclude": [
+        "node_modules",
+        "build",
+        "**/*.test.ts",
+        "temp"
+    ],
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "compileOnSave": false,
+    "buildOnSave": false
+}
