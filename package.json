@@ -1,8 +1,8 @@
 {
     "name": "npm-package-privatify",
-    "version": "1.0.0",
-    "description": "",
-    "main": "run.js",
+    "version": "1.0.1",
+    "description": "一个将npm包处理为离线包的自动化工具",
+    "main": "./build",
     "scripts": {
         "clear": "rimraf build",
         "tsc": "npm run clear && tsc"
@@ -40,5 +40,9 @@
     },
     "engines": {
         "node": ">=7.6"
-    }
+    },
+    "keywords": [
+        "npm",
+        "auto privatify"
+    ]
 }
