@@ -9,7 +9,7 @@ import { cwd, removedir } from '../lib'
 const downloadPackage = async (packageName) => {
   console.log(`🗃  npm install ${packageName}`)
   const spinner = ora().start('This might take a while...\n')
-  try{
+  try {
     execa.commandSync(`npm install ${packageName}`, {
       stdio: 'inherit',
       cwd: path.join(cwd),
@@ -29,7 +29,7 @@ const copyPackage = async(packageName) => {
     path.join(cwd, 'node_modules', packageName),
     path.join(cwd, 'private', packageName)
   )
-  }catch(err){
+  } catch (err) {
     console.log(err, chalk.red(err))
     return
   }
@@ -38,39 +38,40 @@ const copyPackage = async(packageName) => {
 // 在private目录下压缩package为package.tar.gz，删除package
 const zipPackage = async(packageName) => {
   try {
-    const packageNames = packageName.split("/")
-    const name = packageNames[packageNames.length -1]
+    const packageNames = packageName.split('/')
+    const name = packageNames[packageNames.length - 1]
     packageNames.pop()
-    const packagePath = packageNames.join("/")
+    const packagePath = packageNames.join('/')
     execa.commandSync(`tar -zcvf ${name}.tar.gz ${name}`, {
       stdio: 'inherit',
       cwd: packagePath ? path.join(cwd, 'private', packagePath) : path.join(cwd, 'private') 
     })
     removedir(path.join(cwd, 'private', packagePath, name))
-  }catch(err){
+  } catch (err) {
     console.log(err, chalk.red(err))
     return
   }
 }
 
+// 更新package.json文件
 const updatePackageJson = async (packageName) => {
-  try{
-    fs.readFile(path.join(cwd, 'package.json'), 'utf8', function(err,data){
-      if(err) throw err
+  try {
+    fs.readFile(path.join(cwd, 'package.json'), 'utf8', function(err, data) {
+      if (err) throw err
       let json = JSON.parse(data)
-      if(json.dependencies[packageName]){
+      if (json.dependencies[packageName]) {
         json.dependencies[packageName] = `./private/${packageName}.tar.gz`
       }
-      if(json.devDependencies[packageName]){
+      if (json.devDependencies[packageName]) {
         json.devDependencies[packageName] = `./private/${packageName}.tar.gz`
       }
       let newJson = JSON.stringify(json, null, 4)
-      fs.writeFile(path.join(cwd, 'package.json'), newJson, 'utf8', function(err,data){
-        if(err) throw err
+      fs.writeFile(path.join(cwd, 'package.json'), newJson, 'utf8', function(err, data) {
+        if (err) throw err
       })
     })
   }
-  catch(err){
+  catch (err) {
     console.log(err, chalk.red(err))
     return
   }

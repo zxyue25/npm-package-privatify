@@ -5,9 +5,9 @@ import {cwd} from '../lib'
 import { action as  privatePackage } from './package'
 // 获取作用域下有哪些包
 const getPackageName = async (scopeName) => {
-    try{
-        fs.readFile(path.join(cwd, 'package.json'), 'utf8', function(err,data){
-          if(err) throw err
+    try {
+        fs.readFile(path.join(cwd, 'package.json'), 'utf8', function(err, data) {
+          if (err) throw err
           let json = JSON.parse(data)
           let packageNameArr1 = Object.keys(json.dependencies).filter(item => item.includes(scopeName))
           let packageNameArr2 = Object.keys(json.devDependencies).filter(item => item.includes(scopeName))
@@ -17,7 +17,7 @@ const getPackageName = async (scopeName) => {
           })
         })
       }
-      catch(err){
+      catch (err) {
         console.log(err, chalk.red(err))
         return
       }
