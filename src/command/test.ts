@@ -1,6 +1,5 @@
 const action = () => {
-  
-console.log(process.env.npm_package_name);
+  console.log('test');
 }
 
 export default {

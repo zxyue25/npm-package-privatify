@@ -53,14 +53,38 @@ const zipPackage = async(packageName) => {
   }
 }
 
-const action =  async (packageName) => {
+const updatePackageJson = async (packageName) => {
+  try{
+    fs.readFile(path.join(cwd, 'package.json'), 'utf8', function(err,data){
+      if(err) throw err
+      let json = JSON.parse(data)
+      if(json.dependencies[packageName]){
+        json.dependencies[packageName] = `./private/${packageName}.tar.gz`
+      }
+      if(json.devDependencies[packageName]){
+        json.devDependencies[packageName] = `./private/${packageName}.tar.gz`
+      }
+      let newJson = JSON.stringify(json, null, 4)
+      fs.writeFile(path.join(cwd, 'package.json'), newJson, 'utf8', function(err,data){
+        if(err) throw err
+      })
+    })
+  }
+  catch(err){
+    console.log(err, chalk.red(err))
+    return
+  }
+}
+
+export const action =  async (packageName) => {
   await downloadPackage(packageName)
   await copyPackage(packageName)
   await zipPackage(packageName)
+  await updatePackageJson(packageName)
 }
 
 export default {
   command: 'package <packageName>',
-  description: '',
+  description: '将所声明的npm包处理为离线包',
   action,
 }
