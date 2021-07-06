@@ -21,9 +21,7 @@ const getPackageName = async (scopeName) => {
         console.log(err, chalk.red(err))
         return
       }
-
 }
-
 
 const action = async (scopeName) => {
     await getPackageName(scopeName)
