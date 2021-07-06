@@ -4,6 +4,6 @@ const action = async () => {
 
 export default {
     command: 'scope <scopeName>',
-    description: '',
+    description: '将某一个包下的',
     action,
 }
