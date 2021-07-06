@@ -29,7 +29,6 @@
         "ora": "^5.4.1"
     },
     "devDependencies": {
-        "@jdt/widget-sdk": "./private/@jdt/widget-sdk.tar.gz",
         "@types/cli-color": "^0.3.29",
         "@types/lodash": "^4.14.64",
         "@types/mocha": "^2.2.41",
