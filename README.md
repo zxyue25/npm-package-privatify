@@ -1,21 +1,19 @@
 # npm-package-privatify
-## introduction
+## Introduction
 一个将私有源npm包处理为离线包的自动化工具
-
 <br>
 
 ## Installation
 npm install -g npm-package-privatify
-
 <br>
 
 ## Usage
-### 1、`privatify package <package> [scope]`
+### 1、privatify package \<package\> [scope]
 
 将所声明的npm包package处理为离线包，并查找离线包package子包依赖是否包含scope下的子包，如包含也处理为离线包
 
 参数：
-#### \> package：npm包名
+#### \> \<package\>：npm包名
 
 ```js
 // 将@scope1/packageName处理为私包
@@ -61,12 +59,16 @@ privatify package @scope1/packageName @scope1
 
 <br>
 
-### 2、`privatify scope <scope>`
+### 2、privatify scope \<scope\>
 
 提供快捷操作，将所声明作用域下的包统一处理为离线包，查找包是否存在scope下的依赖，有则会处理子包私有包
 
 参数：
-#### \> scope：要查找的作用域
+#### \> \<scope\>：要查找的作用域
+```js
+// 将在@scope1下的包处理为私包
+privatify scope @scope1
+```
 
 <br>
 
