@@ -1,5 +1,5 @@
 # npm-package-privatify
-### 介绍
+## introduction
 一个将私有源npm包处理为离线包的自动化工具
 ## Installation
 npm install -g npm-package-privatify
