@@ -17,7 +17,7 @@ npm install -g npm-package-privatify
 
 ```js
 // 将@scope1/packageName处理为私包
-privatify package @scope1/packageName
+privatify package packageName
 ```
 执行成功后，有两处变化：
 
@@ -26,15 +26,15 @@ privatify package @scope1/packageName
 // 修改前
 ...
 "dependencies|| devDependencies": {
-    "@scope1/packageName": "^0.3.29",
+    "packageName": "^0.3.29",
 },
 // 修改后
 ...
 "dependencies|| devDependencies": {
-    "@scope1/packageName": "file:private/@scope1/packageName-${version}.tar.gz",
+    "packageName": "file:private/packageName-${version}.tar.gz",
 },
 ```
-（2）路径`private/@scope1`下新增文件`packageName-${version}.tar.gz`
+（2）路径`private`下新增文件`packageName-${version}.tar.gz`
 
 ####  \> scope：查找包是否存在scope下的依赖，有则会处理子包私有包
 ```
