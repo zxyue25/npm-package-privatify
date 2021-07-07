@@ -6,7 +6,7 @@ let commandsPath = []
 
 // 获取命令
 const getCommand = () => {
-    commandsPath = (globby as any).sync('./command/*.*s', { cwd:__dirname, deep:1 }) || []
+    commandsPath = (globby as any).sync('./commands/*.*s', { cwd:__dirname, deep:1 }) || []
     return commandsPath
 }
 

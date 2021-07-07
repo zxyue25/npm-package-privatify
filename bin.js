@@ -2,5 +2,4 @@
 require('./build')
 
 // require('ts-node/register')
-
 // require('./src')
