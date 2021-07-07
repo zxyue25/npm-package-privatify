@@ -16,7 +16,7 @@ npm install -g npm-package-privatify
 #### \<package\>：npm包名
 
 ```js
-// 将@scope1/packageName处理为私包
+// 将packageName处理为私包
 privatify package packageName
 ```
 执行成功后，有两处变化：
