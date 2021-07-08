@@ -72,6 +72,10 @@ privatify scope @scope1
 
 <br>
 
+## Realization
+![example](./flow.png)
+
+
 ## 常见问题
 Q: 多个子包依赖包中依赖同一个私有包，但是版本不一样?
 
