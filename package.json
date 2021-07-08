@@ -1,6 +1,6 @@
 {
     "name": "npm-package-privatify",
-    "version": "1.0.5",
+    "version": "1.0.6",
     "description": "一个将私有源npm包处理为离线包的自动化工具",
     "main": "./build",
     "scripts": {
@@ -31,6 +31,8 @@
         "ora": "^5.4.1"
     },
     "devDependencies": {
+        "@jdd/cli-plugin-vue": "file:private/@jdd/cli-plugin-vue-1.0.14.tar.gz",
+        "@jdd/cli-service": "file:private/@jdd/cli-service-1.0.14.tar.gz",
         "@types/cli-color": "^0.3.29",
         "@types/lodash": "^4.14.64",
         "@types/mocha": "^2.2.41",

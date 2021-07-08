@@ -4,7 +4,7 @@ import * as path from 'path'
 import * as chalk from 'chalk'
 import * as fs from 'fs-extra'
 import * as globby from 'globby'
-import { cwd, removedir } from '../lib'
+import { cwd } from '../lib'
 
 // 安装私有包
 const downloadPackage = async (packageName) => {
@@ -41,6 +41,7 @@ const copyPackage = async (packageName, scopeName, parentPackagePath = '') => {
             cwd: path.join(cwd, 'private'),
             deep: 1,
           }) || []
+          console.log(copyedPackages)
         for (const subPackage of subPackages) {
           if (!copyedPackages.includes(subPackage)) {
             try {
@@ -87,7 +88,8 @@ const zipPackage = async (packageName, version) => {
         : path.join(cwd, 'private'),
     })
     spinner.succeed(chalk.green('压缩完成'))
-    await removedir(path.join(cwd, 'private', packagePath, name))
+    // await removedir(path.join(cwd, 'private', packagePath, name))
+    fs.removeSync(path.join(cwd, 'private', packagePath, name))
   } catch (err) {
     spinner.fail(chalk.red('压缩失败'))
     throw err
@@ -105,12 +107,12 @@ const checkSubPackage = async (packageName, scopeName) => {
     let json = JSON.parse(data)
     let packageNameArr1 = json.dependencies
       ? Object.keys(json.dependencies).filter((item) =>
-          item.includes(scopeName)
+          item.startsWith(scopeName)
         )
       : []
     let packageNameArr2 = json.devDependencies
       ? Object.keys(json.devDependencies).filter((item) =>
-          item.includes(scopeName)
+          item.startsWith(scopeName)
         )
       : []
     let packageNameArr = Array.from(
@@ -121,7 +123,7 @@ const checkSubPackage = async (packageName, scopeName) => {
     } else {
       console.log(
         chalk.yellow(
-          `\n检查到${packageName}子包存在scope=${scopeName}下的包:\n${packageNameArr.join(
+          `\n检查到${packageName}子包存在scope=${scopeName}下的私有包:\n${packageNameArr.join(
             ','
           )},需做离线化处理\n`
         )
