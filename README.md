@@ -9,6 +9,7 @@
 npm install -g npm-package-privatify
 ```
 <br>
+
 ### 1、privatify package \<package\> [scope]
 
 将所声明的npm包package处理为离线包，并查找离线包package子包依赖是否包含scope下的子包，如包含也处理为离线包
@@ -73,7 +74,7 @@ privatify scope @scope1
 
 <br>
 
-## Realization
+## 实现流程
 ![example](./flow.png)
 
 
