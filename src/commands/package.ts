@@ -4,6 +4,7 @@ import * as path from 'path'
 import * as chalk from 'chalk'
 import * as fs from 'fs-extra'
 import * as globby from 'globby'
+import * as compressing from 'compressing'
 import { cwd } from '../lib'
 
 // 安装私有包
@@ -26,7 +27,6 @@ const downloadPackage = async (packageName) => {
 
 // 从node_modules复制package到private目录下
 const copyPackage = async (packageName, scopeName, parentPackagePath = '') => {
-  console.log(`开始复制${packageName}`)
   try {
     fs.copySync(
       path.join(cwd, 'node_modules', packageName),
@@ -41,7 +41,6 @@ const copyPackage = async (packageName, scopeName, parentPackagePath = '') => {
             cwd: path.join(cwd, 'private'),
             deep: 1,
           }) || []
-          console.log(copyedPackages)
         for (const subPackage of subPackages) {
           if (!copyedPackages.includes(subPackage)) {
             try {
@@ -75,23 +74,22 @@ const copyPackage = async (packageName, scopeName, parentPackagePath = '') => {
 
 // 在private目录下压缩package为${packageName}.${version}.tar.gz，删除package
 const zipPackage = async (packageName, version) => {
-  const spinner = ora().start(chalk.yellow(`\n 开始压缩${packageName}\n`))
   try {
     const packageNames = packageName.split('/')
     const name = packageNames[packageNames.length - 1]
     packageNames.pop()
     const packagePath = packageNames.join('/')
-    execa.commandSync(`tar -zcvf ${name}-${version}.tar.gz ${name}`, {
-      stdio: 'inherit',
-      cwd: packagePath
-        ? path.join(cwd, 'private', packagePath)
-        : path.join(cwd, 'private'),
-    })
-    spinner.succeed(chalk.green('压缩完成'))
-    // await removedir(path.join(cwd, 'private', packagePath, name))
+    await compressing.tar.compressDir(
+      path.join(cwd, 'private', packagePath, name),
+      path.join(cwd, 'private', packagePath, `${name}-${version}.tar`)
+    )
+    await compressing.tar.compressDir(
+      path.join(cwd, 'private', packagePath, `${name}-${version}.tar`),
+      path.join(cwd, 'private', packagePath, `${name}-${version}.tar.gz`)
+    )
+    fs.removeSync(path.join(cwd, 'private', packagePath, `${name}-${version}.tar`))
     fs.removeSync(path.join(cwd, 'private', packagePath, name))
   } catch (err) {
-    spinner.fail(chalk.red('压缩失败'))
     throw err
     return
   }
@@ -139,7 +137,6 @@ const checkSubPackage = async (packageName, scopeName) => {
 
 // 更新package.json文件
 const updatePackageJson = async (packageName, version, parentPackagePath) => {
-  console.log(`开始更新${packageName},${parentPackagePath}下的package.json`)
   const filePath = parentPackagePath ? '../../' : ''
   try {
     const data = fs.readFileSync(
