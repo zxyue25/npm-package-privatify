@@ -83,7 +83,7 @@ const zipPackage = async (packageName, version) => {
       path.join(cwd, 'private', packagePath, name),
       path.join(cwd, 'private', packagePath, `${name}-${version}.tar`)
     )
-    await compressing.tar.compressDir(
+    await compressing.gzip.compressFile(
       path.join(cwd, 'private', packagePath, `${name}-${version}.tar`),
       path.join(cwd, 'private', packagePath, `${name}-${version}.tar.gz`)
     )
