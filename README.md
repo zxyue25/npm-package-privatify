@@ -14,6 +14,8 @@ npm install -g npm-package-privatify
 
 将所声明的npm包package处理为离线包，并查找离线包package子包依赖是否包含scope下的子包，如包含也处理为离线包
 
+> scope匹配规则：https://www.npmjs.com/package/minimatch
+
 参数：
 #### \<package\>：npm包名
 
@@ -67,6 +69,9 @@ privatify package @scope1/packageName @scope1
 
 参数：
 #### \<scope\>：要查找的作用域
+
+> scope匹配规则：https://www.npmjs.com/package/minimatch
+
 ```js
 // 将在@scope1下的私有包处理为私包
 privatify scope @scope1

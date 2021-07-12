@@ -2,6 +2,7 @@ import * as fs from 'fs-extra'
 import * as path from 'path'
 import * as chalk from 'chalk'
 import { cwd } from '../lib'
+import * as minimatch from 'minimatch'
 import { action as privatePackage } from './package'
 // 获取作用域下有哪些包
 const getPackageName = async (scopeName) => {
@@ -10,12 +11,12 @@ const getPackageName = async (scopeName) => {
     let json = JSON.parse(data)
     let packageNameArr1 = json.dependencies
       ? Object.keys(json.dependencies).filter((item) =>
-          item.startsWith(scopeName)
+          minimatch(item, scopeName)
         )
       : []
     let packageNameArr2 = json.devDependencies
       ? Object.keys(json.devDependencies).filter((item) =>
-          item.startsWith(scopeName)
+          minimatch(item, scopeName)
         )
       : []
     let packageNameArr = Array.from(

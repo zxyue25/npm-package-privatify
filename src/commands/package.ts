@@ -6,6 +6,7 @@ import * as fs from 'fs-extra'
 import * as globby from 'globby'
 import * as compressing from 'compressing'
 import { cwd } from '../lib'
+import * as minimatch from 'minimatch'
 
 // 安装私有包
 const downloadPackage = async (packageName) => {
@@ -28,10 +29,12 @@ const downloadPackage = async (packageName) => {
 // 从node_modules复制package到private目录下
 const copyPackage = async (packageName, scopeName, parentPackagePath = '') => {
   try {
+    fs.removeSync(path.join(cwd, 'private', packageName))
     fs.copySync(
       path.join(cwd, 'node_modules', packageName),
       path.join(cwd, 'private', packageName)
     )
+
     if (scopeName) {
       // 检查package的子包是否有私有包
       const subPackages = await checkSubPackage(packageName, scopeName)
@@ -66,7 +69,6 @@ const copyPackage = async (packageName, scopeName, parentPackagePath = '') => {
       return
     }
   } catch (err) {
-    console.log(chalk.red(err))
     throw err
     return
   }
@@ -107,12 +109,12 @@ const checkSubPackage = async (packageName, scopeName) => {
     let json = JSON.parse(data)
     let packageNameArr1 = json.dependencies
       ? Object.keys(json.dependencies).filter((item) =>
-          item.startsWith(scopeName)
+          minimatch(item, scopeName)
         )
       : []
     let packageNameArr2 = json.devDependencies
       ? Object.keys(json.devDependencies).filter((item) =>
-          item.startsWith(scopeName)
+          minimatch(item, scopeName)
         )
       : []
     let packageNameArr = Array.from(
@@ -197,6 +199,7 @@ export const action = async (packageName, scopeName) => {
 
 export default {
   command: 'package <package> [scope]',
-  description: '将所声明的<package>私有包处理为离线包，并将该私有包依赖子包在[scope]下的包也处理为离线包',
+  description:
+    '将所声明的<package>私有包处理为离线包，并将该私有包依赖子包在[scope]下的包也处理为离线包',
   action,
 }
