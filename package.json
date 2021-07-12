@@ -10,9 +10,6 @@
         "lint": "tslint ./src/**/*.ts --fix",
         "build": "npm install && rimraf build/ && tsc --build ./tsconfig.json"
     },
-    "files": [
-        "bin.js"
-    ],
     "bin": {
         "privatify": "./bin.js"
     },
