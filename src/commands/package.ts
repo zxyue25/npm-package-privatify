@@ -9,18 +9,6 @@ import { cwd } from '../lib'
 
 // 安装私有包
 const downloadPackage = async (packageName) => {
-  // 检查私有包是否是本工程的依赖
-  const data = fs.readFileSync(path.join(cwd, 'package.json'), 'utf8')
-  const json = JSON.parse(data)
-  let packageNameArr1 = json.dependencies ? Object.keys(json.dependencies) : []
-  let packageNameArr2 = json.devDependencies ? Object.keys(json.devDependencies) : []
-  let packageNameArr = Array.from(
-    new Set([...packageNameArr1, ...packageNameArr2])
-  )
-  if(packageNameArr.indexOf(packageName) == -1){
-    throw new Error(`${packageName}包不是本工程依赖，请输出正确的packageName`)
-    return
-  }
   const spinner = ora().start(
     chalk.yellow(`\n 开始下载包： ${packageName}... \n`)
   )
