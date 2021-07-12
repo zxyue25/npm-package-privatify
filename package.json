@@ -8,7 +8,7 @@
         "tsc": "npm run clear && tsc",
         "p": "npm run tsc && npm publish",
         "lint": "tslint ./src/**/*.ts --fix",
-        "build": "npm run clear && tsc"
+        "build": "npm run tsc"
     },
     "bin": {
         "privatify": "./bin.js"
