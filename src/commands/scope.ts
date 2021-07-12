@@ -41,7 +41,7 @@ const getPackageName = async (scopeName) => {
       }
     }
   } catch (err) {
-    console.log(err, chalk.red(err))
+    throw err
     return
   }
 }
