@@ -7,7 +7,8 @@
         "clear": "rimraf build",
         "tsc": "npm run clear && tsc",
         "p": "npm run tsc && npm publish",
-        "lint": "tslint ./src/**/*.ts --fix"
+        "lint": "tslint ./src/**/*.ts --fix",
+        "build": "npm run clear && tsc"
     },
     "bin": {
         "privatify": "./bin.js"
