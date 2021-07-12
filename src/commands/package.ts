@@ -9,6 +9,7 @@ import { cwd } from '../lib'
 
 // 安装私有包
 const downloadPackage = async (packageName) => {
+  // 检查私有包是否是本工程的依赖
   const data = fs.readFileSync(path.join(cwd, 'package.json'), 'utf8')
   const json = JSON.parse(data)
   let packageNameArr1 = json.dependencies ? Object.keys(json.dependencies) : []
@@ -208,6 +209,6 @@ export const action = async (packageName, scopeName) => {
 
 export default {
   command: 'package <package> [scope]',
-  description: '将所声明的npm包处理为离线包',
+  description: '将所声明的<package>私有包处理为离线包，并将该私有包依赖子包在[scope]下的包也处理为离线包',
   action,
 }
