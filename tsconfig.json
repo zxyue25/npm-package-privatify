@@ -26,12 +26,12 @@
             "node",
             "should"
         ],
-        "outDir": "./build",
+        "outDir": "./lib",
         "rootDir": "./src"
     },
     "exclude": [
         "node_modules",
-        "build",
+        "lib",
         "**/*.test.ts",
         "temp"
     ],
