@@ -1,6 +1,6 @@
 {
-    "name": "npm-package-privatify",
-    "version": "1.0.7",
+    "name": "@jdt/npm-package-privatify",
+    "version": "0.0.8",
     "description": "一个将私有源npm包处理为离线包的自动化工具",
     "main": "./build",
     "scripts": {
