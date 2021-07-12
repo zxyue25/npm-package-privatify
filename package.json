@@ -2,7 +2,7 @@
     "name": "@jdt/npm-package-privatify",
     "version": "0.0.8",
     "description": "一个将私有源npm包处理为离线包的自动化工具",
-    "main": "./lib",
+    "main": "./build",
     "scripts": {
         "clear": "rimraf build",
         "tsc": "npm run clear && tsc",
@@ -11,7 +11,7 @@
         "build": "npm install && rimraf build/ && tsc --build ./tsconfig.json"
     },
     "files": [
-        "lib",
+        "build",
         "bin.js"
     ],
     "bin": {
