@@ -13,6 +13,10 @@
     "bin": {
         "privatify": "./bin.js"
     },
+    "files": [
+        "build",
+        "bin.js"
+    ],
     "repository": {
         "type": "git",
         "url": "git+https://github.com/zxyue25/npm-package-privatify.git"
