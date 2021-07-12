@@ -11,7 +11,8 @@
         "build": "npm install && rimraf build/ && tsc --build ./tsconfig.json"
     },
     "files": [
-        "lib"
+        "lib",
+        "bin.js"
     ],
     "bin": {
         "privatify": "./bin.js"
