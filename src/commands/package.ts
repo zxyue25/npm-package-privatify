@@ -198,8 +198,8 @@ export const action = async (packageName, scopeName) => {
 }
 
 export default {
-  command: 'package <package> [scope]',
+  command: 'package <package-name> [scope]',
   description:
-    '将所声明的<package>私有包处理为离线包，并将该私有包依赖子包在[scope]下的包也处理为离线包',
+    '将<package-name>包处理为离线包',//，并将该私有包依赖子包在[scope]下的包也处理为离线包
   action,
 }

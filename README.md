@@ -10,14 +10,14 @@ npm install -g npm-package-privatify
 ```
 <br>
 
-### 1、privatify package \<package\> [scope]
+### 1、privatify package \<package-name\> [scope]
 
 将所声明的npm包package处理为离线包，并查找离线包package子包依赖是否包含scope下的子包，如包含也处理为离线包
 
 > scope匹配规则：https://www.npmjs.com/package/minimatch
 
 参数：
-#### \<package\>：npm包名
+#### \<package-name\>：npm包名
 
 ```js
 // 将packageName处理为私包
@@ -76,6 +76,15 @@ privatify package @scope1/packageName @scope1
 // 将在@scope1下的私有包处理为私包
 privatify scope @scope1
 ```
+
+<br>
+
+### 3、privatify create \<registry-name\>
+
+创建一个npm私服仓库
+
+参数：
+#### \<registry-name\>：私服仓库名称
 
 <br>
 

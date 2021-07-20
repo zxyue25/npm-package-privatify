@@ -1,8 +1,9 @@
 {
-  "name": "vdc-offline-npm-regitry",
+  "name": "{{ name }}",
   "version": "1.0.0",
-  "description": "",
+  "description": "{{ description }}",
   "main": "index.js",
+  "author": "{{ author }}",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
