@@ -1,5 +1,5 @@
 #!/usr/bin/env node   
-re('./build')
+require('./build')
 
 // require('ts-node/register')
 // require('./src')
