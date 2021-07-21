@@ -15,7 +15,8 @@
   },
   "files": [
     "build",
-    "bin.js"
+    "bin.js",
+    "template"
   ],
   "repository": {
     "type": "git",

@@ -6,8 +6,9 @@
         "emitDecoratorMetadata": true,
         "experimentalDecorators": true,
         "allowSyntheticDefaultImports": true,
+        "allowJs": true,
         "alwaysStrict": true,
-        "sourceMap": true,
+        "sourceMap": false,
         "noEmit": false,
         "noEmitHelpers": false,
         "importHelpers": false,
@@ -34,6 +35,9 @@
         "build",
         "**/*.test.ts",
         "temp"
+    ],
+    "include": [
+        "src/**/*"
     ],
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
