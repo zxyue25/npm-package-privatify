@@ -19,7 +19,7 @@ const downloadCode = async (projectName) => {
   )
   try {
     await fs.copy(
-      path.join(__dirname, '..', '..', 'template'),
+      path.join(__dirname, '..', '..', 'private-server-boilerplate'),
       path.join(cwd, projectName)
     )
     spinner.succeed()
