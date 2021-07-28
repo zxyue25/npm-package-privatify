@@ -7,6 +7,7 @@
     "clear": "rimraf build",
     "tsc": "npm run clear && tsc",
     "p": "npm run tsc && npm publish",
+    "test": "jest",
     "lint": "tslint ./src/**/*.ts --fix"
   },
   "bin": {
@@ -28,6 +29,7 @@
   },
   "homepage": "https://github.com/zxyue25/npm-package-privatify#readme",
   "dependencies": {
+    "@babel/preset-typescript": "^7.14.5",
     "chalk": "^4.1.1",
     "commander": "^8.0.0",
     "compressing": "^1.5.1",
@@ -45,6 +47,7 @@
     "@types/mocha": "^2.2.41",
     "@types/node": "^10.17.58",
     "@types/should": "^8.3.0",
+    "jest": "^27.0.6",
     "rimraf": "^3.0.2",
     "ts-node": "^10.0.0",
     "tslint": "^5.1.0",
