@@ -43,15 +43,38 @@
   },
   "devDependencies": {
     "@types/cli-color": "^0.3.29",
+    "@types/jest": "^26.0.24",
     "@types/lodash": "^4.14.64",
     "@types/mocha": "^2.2.41",
     "@types/node": "^10.17.58",
     "@types/should": "^8.3.0",
-    "jest": "^27.0.6",
+    "jest": "^26.6.3",
     "rimraf": "^3.0.2",
+    "ts-jest": "^26.5.4",
     "ts-node": "^10.0.0",
     "tslint": "^5.1.0",
     "typescript": "^4.2.3"
+  },
+  "jest": {
+    "moduleFileExtensions": [
+      "js",
+      "ts"
+    ],
+    "testMatch": [
+      "<rootDir>/src/__tests__/*.test.ts"
+    ],
+    "testPathIgnorePatterns": [
+      "/node_modules/"
+    ],
+    "transform": {
+      "^.+\\.ts$": "<rootDir>/node_modules/ts-jest"
+    },
+    "coveragePathIgnorePatterns": [
+      "/node_modules/",
+      "/__tests__/",
+      "/dist/"
+    ],
+    "testTimeout": 50000
   },
   "engines": {
     "node": ">=7.6"

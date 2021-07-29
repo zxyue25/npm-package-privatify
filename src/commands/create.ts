@@ -90,8 +90,8 @@ const checkExist = async (projectName) => {
   return true
 }
 
-const action = (projectName) => {
-  downloadCode(projectName)
+const action = async (projectName) => {
+  await downloadCode(projectName)
 }
 
 export default {
