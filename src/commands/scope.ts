@@ -1,9 +1,8 @@
-import * as fs from 'fs-extra'
 import * as path from 'path'
-import * as chalk from 'chalk'
-import { cwd } from '../lib'
+import { cwd, chalk, fs } from '../lib'
 import * as minimatch from 'minimatch'
 import { action as privatePackage } from './package'
+
 // 获取作用域下有哪些包
 const getPackageName = async (scopeName) => {
   try {

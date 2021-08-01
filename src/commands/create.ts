@@ -1,11 +1,8 @@
 import * as path from 'path'
-import * as fs from 'fs-extra'
 import * as handlebars from 'handlebars'
 import * as ora from 'ora'
 import * as inquirer from 'inquirer'
-import * as chalk from 'chalk'
-import { cwd } from '../lib'
-import * as execa from 'execa'
+import { cwd, chalk, execa, fs } from '../lib'
 
 // 初始化工程
 const downloadCode = async (projectName) => {

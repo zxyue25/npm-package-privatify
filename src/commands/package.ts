@@ -1,11 +1,8 @@
-import * as execa from 'execa'
 import * as ora from 'ora'
 import * as path from 'path'
-import * as chalk from 'chalk'
-import * as fs from 'fs-extra'
 import * as globby from 'globby'
 import * as compressing from 'compressing'
-import { cwd } from '../lib'
+import { cwd, chalk, execa, fs } from '../lib'
 import * as minimatch from 'minimatch'
 
 // 安装私有包
