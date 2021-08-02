@@ -7,7 +7,7 @@
     "clear": "rimraf build",
     "tsc": "npm run clear && tsc",
     "p": "npm run tsc && npm publish",
-    "test": "jest",
+    "test": "node scripts/test.ts",
     "lint": "tslint ./src/**/*.ts --fix"
   },
   "bin": {
@@ -49,6 +49,7 @@
     "@types/node": "^10.17.58",
     "@types/should": "^8.3.0",
     "jest": "^26.6.3",
+    "minimist": "^1.2.5",
     "rimraf": "^3.0.2",
     "ts-jest": "^26.5.4",
     "ts-node": "^10.0.0",
@@ -61,7 +62,7 @@
       "ts"
     ],
     "testMatch": [
-      "<rootDir>/src/__tests__/*.test.ts"
+      "<rootDir>/src/__tests__/*.spec.ts"
     ],
     "testPathIgnorePatterns": [
       "/node_modules/"
