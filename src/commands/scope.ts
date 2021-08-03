@@ -1,46 +1,21 @@
-
-import { chalk} from '../lib'
-import { getPackage } from './utils/get-package'
-import { action as privatePackage } from './package'
+import { chalk } from '../lib'
+import { checkPackage } from './utils/check-package'
+import { privatePackage } from './package'
 import { readFile } from './utils'
-// 获取作用域下有哪些包
-const getPackageName = async (scopeName) => {
-  try {
-    let json = readFile()
-    let packageNameArr = getPackage(json, scopeName)
-    if (packageNameArr.length === 0) {
-      console.log(
-        chalk.yellow(`\n 检测到scopeName ${scopeName}下，没有私有包\n`)
-      )
-    } else {
-      console.log(
-        chalk.yellow(
-          `\n检测到scopeName：${scopeName}下，有${
-            packageNameArr.length
-          }个私有包：${packageNameArr.join('，')} \n`
-        )
-      )
-      for (const packageName of packageNameArr) {
-        try {
-          await privatePackage(packageName, scopeName)
-        } catch (err) {
-          throw err
-          return
-        }
-      }
-    }
-  } catch (err) {
-    throw err
-    return
-  }
-}
 
 const action = async (scopeName) => {
   try {
-    await getPackageName(scopeName)
+    // 读取包package.json文件
+    let packageJson = readFile()
+    // 检查依赖包是否有scope下的私有包
+    const targetPackages = checkPackage(packageJson, scopeName)
+    if (targetPackages) {
+      for (const targetPackage of targetPackages) {
+        await privatePackage(targetPackage, scopeName)
+      }
+    }
   } catch (err) {
     console.log(chalk.red(err))
-    return
   }
 }
 

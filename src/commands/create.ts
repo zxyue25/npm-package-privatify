@@ -14,9 +14,6 @@ import {
 // 初始化工程
 const downloadCode = async (projectName) => {
   const targetDir = path.join(cwd, projectName)
-  if (!(await checkProjectExist(targetDir))) {
-    return false
-  }
   startSpinner(`开始创建私服仓库 ${chalk.cyan(targetDir)}`)
   try {
     // 复制'private-server-boilerplate'到目标路径下创建工程
@@ -50,15 +47,10 @@ const downloadCode = async (projectName) => {
     fs.writeFileSync(jsonPath, jsonResult)
 
     // 新建工程装包
-    try {
-      execa.commandSync('npm install', {
-        stdio: 'inherit',
-        cwd: targetDir,
-      })
-    } catch (err) {
-      failSpinner(err)
-      return
-    }
+    execa.commandSync('npm install', {
+      stdio: 'inherit',
+      cwd: targetDir,
+    })
 
     succeedSpiner(
       `私服仓库创建完成 ${chalk.yellow(
@@ -85,16 +77,18 @@ const checkProjectExist = async (targetDir) => {
     if (answer.checkExist === '覆盖') {
       console.log(`删除 ${chalk.cyan(targetDir)}...\n`)
       fs.removeSync(targetDir)
-      return true
     } else {
-      return false
+      return true
     }
   }
-  return true
+  return false
 }
 
 const action = async (projectName) => {
-  await downloadCode(projectName)
+  const targetDir = path.join(cwd, projectName)
+  if (!(await checkProjectExist(targetDir))) {
+    await downloadCode(projectName)
+  }
 }
 
 export default {

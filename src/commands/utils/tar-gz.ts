@@ -1,15 +1,14 @@
-import { cwd, fs } from '../../lib'
+import { cwd, fs, targetFile } from '../../lib'
 import * as path from 'path'
 import * as compressing from 'compressing'
 
 // 将文件压缩为.tar.gz
-export const tagGz = async (
+export const tarGz = async (
   filePath,
   fileName,
-  fileVersion,
-  prefilePath = 'private'
+  fileVersion
 ) => {
-  const packagePath = `${prefilePath}/${filePath}`
+  const packagePath = `${targetFile}/${filePath}`
   const zipFileName = fileVersion ? `${fileName}-${fileVersion}` : fileName
   await compressing.tar.compressDir(
     path.join(cwd, packagePath, fileName),

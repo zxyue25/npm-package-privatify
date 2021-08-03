@@ -2,6 +2,7 @@ import * as path from 'path'
 import * as globby from 'globby'
 import {
   cwd,
+  targetFile,
   chalk,
   execa,
   fs,
@@ -9,156 +10,88 @@ import {
   succeedSpiner,
   failSpinner,
 } from '../lib'
-import { getPackage, readFile, tagGz } from './utils'
+import { checkPackage, readFile, tarGz } from './utils'
 
 // 安装私有包
-const downloadPackage = async (packageName) => {
+export const privatePackage = async (packageName, scopeName) => {
   startSpinner(`开始下载包 ${packageName}`)
-  try {
-    execa.commandSync(`npm install ${packageName}`, {
-      stdio: 'inherit',
-      cwd: path.join(cwd),
-    })
-    succeedSpiner(`包下载完成 ${chalk.yellow(packageName)}`)
-  } catch (err) {
-    failSpinner(err)
-    throw err
-    return
-  }
+  execa.commandSync(`npm install ${packageName}`, {
+    stdio: 'inherit',
+    cwd,
+  })
+  succeedSpiner(`包下载完成 ${chalk.yellow(packageName)}`)
+  await updatePackage(packageName, scopeName)
 }
 
-// 从node_modules复制package到private目录下
-const copyPackage = async (packageName, scopeName, parentPackagePath = '') => {
-  try {
-    fs.removeSync(path.join(cwd, 'private', packageName))
-    fs.copySync(
-      path.join(cwd, 'node_modules', packageName),
-      path.join(cwd, 'private', packageName)
-    )
-
-    if (scopeName) {
-      // 检查package的子包是否有私有包
-      const subPackages = await checkSubPackage(packageName, scopeName)
-      if (subPackages) {
-        const copyedPackages =
-          (globby as any).sync(`./${scopeName}`, {
-            cwd: path.join(cwd, 'private'),
-            deep: 1,
-          }) || []
-        for (const subPackage of subPackages) {
-          if (!copyedPackages.includes(subPackage)) {
-            try {
-              await copyPackage(subPackage, scopeName, `private/${packageName}`)
-            } catch (err) {
-              throw err
-              return
-            }
-          }
+// 将私有包及私有子包离线化
+const updatePackage = async (
+  packageName,
+  scopeName,
+  parentPackagePath = ''
+) => {
+  fs.removeSync(path.join(cwd, targetFile, packageName))
+  // 复制包从node_modules到targetFile
+  fs.copySync(
+    path.join(cwd, 'node_modules', packageName),
+    path.join(cwd, targetFile, packageName)
+  )
+  // 读取包package.json文件
+  const packageJson = readFile(`${targetFile}/${packageName}`)
+  if (scopeName) {
+    // 检查package的子包是否有scope下的私有包
+    const subPackages = checkPackage(packageJson, scopeName)
+    if (subPackages) {
+      const copyedPackages =
+        (globby as any).sync(`./${scopeName}`, {
+          cwd: path.join(cwd, targetFile),
+          deep: 1,
+        }) || []
+      for (const subPackage of subPackages) {
+        if (!copyedPackages.includes(subPackage)) {
+          await updatePackage(subPackage, scopeName, `${targetFile}/${packageName}`)
         }
       }
     }
-    const json = readFile(`private/${packageName}`)
-    const version = json.version
-    try {
-      await updatePackageJson(packageName, version, parentPackagePath)
-      chalk.green(`私有化处理完成 ${packageName}`)
-    } catch (err) {
-      throw err
-      return
-    }
-  } catch (err) {
-    throw err
-    return
   }
-}
-
-// 在private目录下压缩package为${packageName}.${version}.tar.gz，删除package
-const zipPackage = async (packageName, version) => {
-  try {
-    const packageNames = packageName.split('/')
-    const name = packageNames[packageNames.length - 1]
-    packageNames.pop()
-    const packagePath = packageNames.join('/')
-    await tagGz(packagePath, name, version)
-    chalk.green(`私有化处理完成 ${packageName}`)
-  } catch (err) {
-    throw err
-    return
-  }
-}
-
-// 检查package的子包是否有私有包
-const checkSubPackage = async (packageName, scopeName) => {
-  try {
-    let json = readFile(`private/${packageName}`)
-    let packageNameArr = getPackage(json, scopeName)
-    if (packageNameArr.length === 0) {
-      return false
-    } else {
-      console.log(
-        chalk.yellow(
-          `\n检测到${packageName}子包下，有${
-            packageNameArr.length
-          }个私有包：${packageNameArr.join('，')}`
-        )
-      )
-      return packageNameArr
-    }
-  } catch (err) {
-    throw err
-    return
-  }
-  return false
+  const { version } = packageJson
+  // 更新包的package.json
+  await updatePackageJson(packageName, version, parentPackagePath)
 }
 
 // 更新package.json文件
 const updatePackageJson = async (packageName, version, parentPackagePath) => {
   const filePath = parentPackagePath ? '../../' : ''
-  try {
-    const json = readFile(`${parentPackagePath}`)
-    if (json.dependencies && json.dependencies[packageName]) {
-      json.dependencies[
-        packageName
-      ] = `file:${filePath}private/${packageName}-${version}.tar.gz`
-    }
-    if (json.devDependencies && json.devDependencies[packageName]) {
-      json.devDependencies[
-        packageName
-      ] = `file:${filePath}private/${packageName}-${version}.tar.gz`
-    }
-    let newJson = JSON.stringify(json, null, 4)
-    fs.writeFileSync(
-      path.join(cwd, parentPackagePath, 'package.json'),
-      newJson,
-      'utf8'
-    )
-    try {
-      await zipPackage(packageName, version)
-    } catch (err) {
-      throw err
-      return
-    }
-  } catch (err) {
-    throw err
-    return
+  const packageJson = readFile(parentPackagePath)
+  const packagePath = `file:${filePath}${targetFile}/${packageName}-${version}.tar.gz`
+  if (packageJson.dependencies && packageJson.dependencies[packageName]) {
+    packageJson.dependencies[packageName] = packagePath
   }
+  if (packageJson.devDependencies && packageJson.devDependencies[packageName]) {
+    packageJson.devDependencies[packageName] = packagePath
+  }
+  fs.writeFileSync(
+    path.join(cwd, parentPackagePath, 'package.json'),
+    JSON.stringify(packageJson, null, 4),
+    'utf8'
+  )
+  await zipPackage(packageName, version)
 }
 
-export const action = async (packageName, scopeName) => {
+// 在targetFile目录下压缩package为${packageName}.${version}.tar.gz，删除package
+const zipPackage = async (packageName, version) => {
+  const packageNames = packageName.split('/')
+  const name = packageNames[packageNames.length - 1]
+  packageNames.pop()
+  const packagePath = packageNames.join('/')
+  await tarGz(packagePath, name, version)
+  chalk.green(`私有化处理完成 ${packageName}`)
+}
+
+const action = async (packageName, scopeName) => {
   try {
-    await downloadPackage(packageName)
+    await privatePackage(packageName, scopeName)
   } catch (err) {
-    if (scopeName) {
-      throw err
-    } else {
-      console.log(chalk.red(err))
-    }
-    return
-  }
-  try {
-    await copyPackage(packageName, scopeName)
-  } catch (err) {
-    console.log(chalk.red(err))
+    failSpinner(err)
     return
   }
   console.log(chalk.green(`\n完成包离线处理 ${packageName}`))
