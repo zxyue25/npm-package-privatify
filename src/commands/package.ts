@@ -1,23 +1,32 @@
-import * as ora from 'ora'
 import * as path from 'path'
 import * as globby from 'globby'
 import * as compressing from 'compressing'
-import { cwd, chalk, execa, fs } from '../lib'
+import {
+  cwd,
+  chalk,
+  execa,
+  fs,
+  startSpinner,
+  succeedSpiner,
+  failSpinner,
+} from '../lib'
 import * as minimatch from 'minimatch'
 
 // 安装私有包
 const downloadPackage = async (packageName) => {
-  const spinner = ora().start(
-    chalk.yellow(`\n 开始下载包： ${packageName}... \n`)
-  )
+  startSpinner(`开始下载包 ${packageName}`)
   try {
     execa.commandSync(`npm install ${packageName}`, {
       stdio: 'inherit',
       cwd: path.join(cwd),
     })
-    spinner.succeed(chalk.green('下载完成'))
+    succeedSpiner(
+      `包下载完成 ${chalk.yellow(
+        packageName
+      )}`
+    )
   } catch (err) {
-    spinner.fail(chalk.red('下载失败'))
+    failSpinner(err)
     throw err
     return
   }
@@ -61,6 +70,7 @@ const copyPackage = async (packageName, scopeName, parentPackagePath = '') => {
     const version = json.version
     try {
       await updatePackageJson(packageName, version, parentPackagePath)
+      chalk.green(`私有化处理完成 ${packageName}`)
     } catch (err) {
       throw err
       return
@@ -90,6 +100,7 @@ const zipPackage = async (packageName, version) => {
       path.join(cwd, 'private', packagePath, `${name}-${version}.tar`)
     )
     fs.removeSync(path.join(cwd, 'private', packagePath, name))
+    chalk.green(`私有化处理完成 ${packageName}`)
   } catch (err) {
     throw err
     return
@@ -122,9 +133,9 @@ const checkSubPackage = async (packageName, scopeName) => {
     } else {
       console.log(
         chalk.yellow(
-          `\n检查到${packageName}子包存在scope=${scopeName}下的私有包:\n${packageNameArr.join(
-            ','
-          )},需做离线化处理\n`
+          `\n检测到${packageName}子包下，有${
+            packageNameArr.length
+          }个私有包：${packageNameArr.join(',')}`
         )
       )
       return packageNameArr
@@ -168,7 +179,6 @@ const updatePackageJson = async (packageName, version, parentPackagePath) => {
       return
     }
   } catch (err) {
-    console.log(err, 'parentPackagePathparentPackagePathparentPackagePath')
     throw err
     return
   }
@@ -191,12 +201,11 @@ export const action = async (packageName, scopeName) => {
     console.log(chalk.red(err))
     return
   }
-  console.log(chalk.green(`\n 完成${packageName}包离线处理`))
+  console.log(chalk.green(`\n完成包离线处理 ${packageName}`))
 }
 
 export default {
   command: 'package <package-name> [scope]',
-  description:
-    '将<package-name>包处理为离线包',//，并将该私有包依赖子包在[scope]下的包也处理为离线包
+  description: '将<package-name>包处理为离线包', //，并将该私有包依赖子包在[scope]下的包也处理为离线包
   action,
 }

@@ -1,8 +1,15 @@
 import * as path from 'path'
 import * as handlebars from 'handlebars'
-import * as ora from 'ora'
 import * as inquirer from 'inquirer'
-import { cwd, chalk, execa, fs } from '../lib'
+import {
+  cwd,
+  chalk,
+  execa,
+  fs,
+  startSpinner,
+  succeedSpiner,
+  failSpinner,
+} from '../lib'
 
 // 初始化工程
 const downloadCode = async (projectName) => {
@@ -10,16 +17,12 @@ const downloadCode = async (projectName) => {
   if (!(await checkExist(projectName))) {
     return false
   }
-  // 下载之前做loading提示
-  const spinner = ora().start(
-    `\n✨  开始创建私服仓库 ${chalk.cyan(projectPath)}.`
-  )
+  startSpinner(`开始创建私服仓库 ${chalk.cyan(projectPath)}`)
   try {
     await fs.copy(
       path.join(__dirname, '..', '..', 'private-server-boilerplate'),
       path.join(cwd, projectName)
     )
-    spinner.succeed()
     const answers = await inquirer.prompt([
       {
         type: 'input',
@@ -44,24 +47,23 @@ const downloadCode = async (projectName) => {
     const packageResult = handlebars.compile(packageContent)(answers)
     //将解析后的结果重写到package.json文件中
     fs.writeFileSync(packagePath, packageResult)
-
     try {
       execa.commandSync('npm install', {
         stdio: 'inherit',
         cwd: path.join(cwd, projectName),
       })
     } catch (err) {
-      spinner.fail()
-      console.log(err, chalk.red(err))
+      failSpinner(err)
       return
     }
-
-    console.log(`\n🎉  私服仓库创建完成 ${chalk.yellow(projectName)}.`)
-    console.log(`👉  输入以下命令开启私服: \n`)
+    succeedSpiner(
+      `私服仓库创建完成 ${chalk.yellow(
+        projectName
+      )}\n👉 输入以下命令开启私服: \n`
+    )
     console.log(chalk.cyan(`$ cd ${projectName}\n$ sh start.sh\n`))
   } catch (err) {
-    spinner.fail()
-    console.log(err, chalk.red(err))
+    failSpinner(err)
     return
   }
 }

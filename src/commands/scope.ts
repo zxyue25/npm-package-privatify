@@ -22,11 +22,13 @@ const getPackageName = async (scopeName) => {
       new Set([...packageNameArr1, ...packageNameArr2])
     )
     if (packageNameArr.length === 0) {
-      console.log(chalk.green(`\nscopeName：${scopeName}下，没有私有包\n`))
+      console.log(
+        chalk.yellow(`\n 检测到scopeName ${scopeName}下，没有私有包\n`)
+      )
     } else {
       console.log(
-        chalk.green(
-          `\nscopeName：${scopeName}下，有${
+        chalk.yellow(
+          `\n检测到scopeName：${scopeName}下，有${
             packageNameArr.length
           }个私有包：${packageNameArr.join(',')} \n`
         )
@@ -58,6 +60,6 @@ const action = async (scopeName) => {
 
 export default {
   command: 'scope <scope>',
-  description: '将作用域<scope>下的包处理为离线包',//将所声明作用域<scope>下的私有包及私有包依赖子包处理为离线包
+  description: '将作用域<scope>下的包处理为离线包', //将所声明作用域<scope>下的私有包及私有包依赖子包处理为离线包
   action,
 }
