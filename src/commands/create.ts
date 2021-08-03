@@ -14,14 +14,15 @@ import {
 // 初始化工程
 const downloadCode = async (projectName) => {
   const targetDir = path.join(cwd, projectName)
-  if (!(await checkExist(targetDir))) {
+  if (!(await checkProjectExist(targetDir))) {
     return false
   }
   startSpinner(`开始创建私服仓库 ${chalk.cyan(targetDir)}`)
   try {
+    // 复制'private-server-boilerplate'到目标路径下创建工程
     await fs.copy(
       path.join(__dirname, '..', '..', 'private-server-boilerplate'),
-      path.join(cwd, projectName)
+      targetDir
     )
     const answers = await inquirer.prompt([
       {
@@ -41,11 +42,14 @@ const downloadCode = async (projectName) => {
         message: 'author',
       },
     ])
+
+    // handlebars模版引擎解析用户输入的信息存在package.json
     const jsonPath = `${targetDir}/package.json`
     const jsonContent = fs.readFileSync(jsonPath, 'utf-8')
     const jsonResult = handlebars.compile(jsonContent)(answers)
     fs.writeFileSync(jsonPath, jsonResult)
 
+    // 新建工程装包
     try {
       execa.commandSync('npm install', {
         stdio: 'inherit',
@@ -70,7 +74,7 @@ const downloadCode = async (projectName) => {
 }
 
 // 检查是否已经存在相同名字工程
-const checkExist = async (targetDir) => {
+const checkProjectExist = async (targetDir) => {
   if (fs.existsSync(targetDir)) {
     const answer = await inquirer.prompt({
       type: 'list',
