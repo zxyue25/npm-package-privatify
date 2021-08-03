@@ -1,6 +1,7 @@
 import { cwd, fs } from '../../lib'
 import * as path from 'path'
 
+// 读取文件
 export const readFile = (
   filePath: string = '',
   fileName: string = 'package.json'

@@ -1,5 +1,6 @@
 import * as minimatch from 'minimatch'
 
+// 查找scope下的依赖包
 export const getPackage = (json, filterName) => {
   const packageNameArr =
     Array.from(

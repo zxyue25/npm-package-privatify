@@ -15,7 +15,7 @@ export const startSpinner = (text?: string) => {
 export const succeedSpiner = (text?: string) => {
   spinner.stopAndPersist({
     symbol: '🎉',
-    text: chalk.green(`${text}`)
+    text: chalk.green(text)
   })
 }
 

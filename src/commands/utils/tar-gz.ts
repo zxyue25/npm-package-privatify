@@ -2,6 +2,7 @@ import { cwd, fs } from '../../lib'
 import * as path from 'path'
 import * as compressing from 'compressing'
 
+// 将文件压缩为.tar.gz
 export const tagGz = async (
   filePath,
   fileName,

@@ -13,11 +13,11 @@ import {
 
 // 初始化工程
 const downloadCode = async (projectName) => {
-  const projectPath = path.join(cwd, projectName)
-  if (!(await checkExist(projectName))) {
+  const targetDir = path.join(cwd, projectName)
+  if (!(await checkExist(targetDir))) {
     return false
   }
-  startSpinner(`开始创建私服仓库 ${chalk.cyan(projectPath)}`)
+  startSpinner(`开始创建私服仓库 ${chalk.cyan(targetDir)}`)
   try {
     await fs.copy(
       path.join(__dirname, '..', '..', 'private-server-boilerplate'),
@@ -41,26 +41,27 @@ const downloadCode = async (projectName) => {
         message: 'author',
       },
     ])
-    const packagePath = `${projectName}/package.json`
-    const packageContent = fs.readFileSync(packagePath, 'utf-8')
-    //使用handlebars解析模板引擎
-    const packageResult = handlebars.compile(packageContent)(answers)
-    //将解析后的结果重写到package.json文件中
-    fs.writeFileSync(packagePath, packageResult)
+    const jsonPath = `${targetDir}/package.json`
+    const jsonContent = fs.readFileSync(jsonPath, 'utf-8')
+    const jsonResult = handlebars.compile(jsonContent)(answers)
+    fs.writeFileSync(jsonPath, jsonResult)
+
     try {
       execa.commandSync('npm install', {
         stdio: 'inherit',
-        cwd: path.join(cwd, projectName),
+        cwd: targetDir,
       })
     } catch (err) {
       failSpinner(err)
       return
     }
+
     succeedSpiner(
       `私服仓库创建完成 ${chalk.yellow(
         projectName
       )}\n👉 输入以下命令开启私服: \n`
     )
+
     console.log(chalk.cyan(`$ cd ${projectName}\n$ sh start.sh\n`))
   } catch (err) {
     failSpinner(err)
@@ -69,18 +70,17 @@ const downloadCode = async (projectName) => {
 }
 
 // 检查是否已经存在相同名字工程
-const checkExist = async (projectName) => {
-  const projectPath = path.join(cwd, projectName)
-  if (fs.existsSync(projectPath)) {
+const checkExist = async (targetDir) => {
+  if (fs.existsSync(targetDir)) {
     const answer = await inquirer.prompt({
       type: 'list',
       name: 'checkExist',
-      message: `\n仓库路径${projectPath}已存在，请选择`,
+      message: `\n仓库路径${targetDir}已存在，请选择`,
       choices: ['覆盖', '取消'],
     })
     if (answer.checkExist === '覆盖') {
-      console.log(`删除 ${chalk.cyan(projectPath)}...\n`)
-      fs.removeSync(projectPath)
+      console.log(`删除 ${chalk.cyan(targetDir)}...\n`)
+      fs.removeSync(targetDir)
       return true
     } else {
       return false
