@@ -1,26 +1,13 @@
-import * as path from 'path'
-import { cwd, chalk, fs } from '../lib'
-import * as minimatch from 'minimatch'
-import { action as privatePackage } from './package'
 
+import { chalk} from '../lib'
+import { getPackage } from './utils/get-package'
+import { action as privatePackage } from './package'
+import { readFile } from './utils'
 // 获取作用域下有哪些包
 const getPackageName = async (scopeName) => {
   try {
-    const data = fs.readFileSync(path.join(cwd, 'package.json'), 'utf8')
-    let json = JSON.parse(data)
-    let packageNameArr1 = json.dependencies
-      ? Object.keys(json.dependencies).filter((item) =>
-          minimatch(item, scopeName)
-        )
-      : []
-    let packageNameArr2 = json.devDependencies
-      ? Object.keys(json.devDependencies).filter((item) =>
-          minimatch(item, scopeName)
-        )
-      : []
-    let packageNameArr = Array.from(
-      new Set([...packageNameArr1, ...packageNameArr2])
-    )
+    let json = readFile()
+    let packageNameArr = getPackage(json, scopeName)
     if (packageNameArr.length === 0) {
       console.log(
         chalk.yellow(`\n 检测到scopeName ${scopeName}下，没有私有包\n`)
@@ -30,7 +17,7 @@ const getPackageName = async (scopeName) => {
         chalk.yellow(
           `\n检测到scopeName：${scopeName}下，有${
             packageNameArr.length
-          }个私有包：${packageNameArr.join(',')} \n`
+          }个私有包：${packageNameArr.join('，')} \n`
         )
       )
       for (const packageName of packageNameArr) {
@@ -51,7 +38,6 @@ const getPackageName = async (scopeName) => {
 const action = async (scopeName) => {
   try {
     await getPackageName(scopeName)
-    console.log(chalk.green(`\nscopeName：${scopeName}下私有包处理完毕`))
   } catch (err) {
     console.log(chalk.red(err))
     return

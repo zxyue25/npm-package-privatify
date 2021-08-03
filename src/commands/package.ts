@@ -1,6 +1,5 @@
 import * as path from 'path'
 import * as globby from 'globby'
-import * as compressing from 'compressing'
 import {
   cwd,
   chalk,
@@ -10,7 +9,7 @@ import {
   succeedSpiner,
   failSpinner,
 } from '../lib'
-import * as minimatch from 'minimatch'
+import { getPackage, readFile, tagGz } from './utils'
 
 // 安装私有包
 const downloadPackage = async (packageName) => {
@@ -20,11 +19,7 @@ const downloadPackage = async (packageName) => {
       stdio: 'inherit',
       cwd: path.join(cwd),
     })
-    succeedSpiner(
-      `包下载完成 ${chalk.yellow(
-        packageName
-      )}`
-    )
+    succeedSpiner(`包下载完成 ${chalk.yellow(packageName)}`)
   } catch (err) {
     failSpinner(err)
     throw err
@@ -62,11 +57,7 @@ const copyPackage = async (packageName, scopeName, parentPackagePath = '') => {
         }
       }
     }
-    const data = fs.readFileSync(
-      path.join(cwd, 'private', packageName, 'package.json'),
-      'utf8'
-    )
-    const json = JSON.parse(data)
+    const json = readFile(`private/${packageName}`)
     const version = json.version
     try {
       await updatePackageJson(packageName, version, parentPackagePath)
@@ -88,18 +79,7 @@ const zipPackage = async (packageName, version) => {
     const name = packageNames[packageNames.length - 1]
     packageNames.pop()
     const packagePath = packageNames.join('/')
-    await compressing.tar.compressDir(
-      path.join(cwd, 'private', packagePath, name),
-      path.join(cwd, 'private', packagePath, `${name}-${version}.tar`)
-    )
-    await compressing.gzip.compressFile(
-      path.join(cwd, 'private', packagePath, `${name}-${version}.tar`),
-      path.join(cwd, 'private', packagePath, `${name}-${version}.tar.gz`)
-    )
-    fs.removeSync(
-      path.join(cwd, 'private', packagePath, `${name}-${version}.tar`)
-    )
-    fs.removeSync(path.join(cwd, 'private', packagePath, name))
+    await tagGz(packagePath, name, version)
     chalk.green(`私有化处理完成 ${packageName}`)
   } catch (err) {
     throw err
@@ -110,24 +90,8 @@ const zipPackage = async (packageName, version) => {
 // 检查package的子包是否有私有包
 const checkSubPackage = async (packageName, scopeName) => {
   try {
-    const data = fs.readFileSync(
-      path.join(cwd, 'private', packageName, 'package.json'),
-      'utf8'
-    )
-    let json = JSON.parse(data)
-    let packageNameArr1 = json.dependencies
-      ? Object.keys(json.dependencies).filter((item) =>
-          minimatch(item, scopeName)
-        )
-      : []
-    let packageNameArr2 = json.devDependencies
-      ? Object.keys(json.devDependencies).filter((item) =>
-          minimatch(item, scopeName)
-        )
-      : []
-    let packageNameArr = Array.from(
-      new Set([...packageNameArr1, ...packageNameArr2])
-    )
+    let json = readFile(`private/${packageName}`)
+    let packageNameArr = getPackage(json, scopeName)
     if (packageNameArr.length === 0) {
       return false
     } else {
@@ -135,7 +99,7 @@ const checkSubPackage = async (packageName, scopeName) => {
         chalk.yellow(
           `\n检测到${packageName}子包下，有${
             packageNameArr.length
-          }个私有包：${packageNameArr.join(',')}`
+          }个私有包：${packageNameArr.join('，')}`
         )
       )
       return packageNameArr
@@ -151,11 +115,7 @@ const checkSubPackage = async (packageName, scopeName) => {
 const updatePackageJson = async (packageName, version, parentPackagePath) => {
   const filePath = parentPackagePath ? '../../' : ''
   try {
-    const data = fs.readFileSync(
-      path.join(cwd, parentPackagePath, 'package.json'),
-      'utf8'
-    )
-    const json = JSON.parse(data)
+    const json = readFile(`${parentPackagePath}`)
     if (json.dependencies && json.dependencies[packageName]) {
       json.dependencies[
         packageName

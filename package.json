@@ -8,7 +8,6 @@
         "tsc": "npm run clear && tsc",
         "p": "npm run tsc && npm publish",
         "test": "node scripts/test.ts",
-        "ora": "node scripts/ora.ts",
         "lint": "tslint ./src/**/*.ts --fix"
     },
     "bin": {
@@ -43,6 +42,9 @@
         "ora": "^5.4.1"
     },
     "devDependencies": {
+        "@jdd/cli-plugin-babel": "file:private/@jdd/cli-plugin-babel-1.0.14.tar.gz",
+        "@jdd/cli-plugin-vue": "file:private/@jdd/cli-plugin-vue-1.0.14.tar.gz",
+        "@jdd/cli-service": "file:private/@jdd/cli-service-1.0.14.tar.gz",
         "@types/cli-color": "^0.3.29",
         "@types/jest": "^26.0.24",
         "@types/lodash": "^4.14.64",
