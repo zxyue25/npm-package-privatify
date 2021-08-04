@@ -1,0 +1,114 @@
+{
+  "name": "project-demo",
+  "version": "1.0.0",
+  "description": "project-demo project",
+  "repository": {
+    "url": ""
+  },
+  "license": "MIT",
+  "scripts": {
+    "build": "jddcli-service build",
+    "serve": "jddcli-service serve",
+    "lint": "eslint 'src/**/*.{js,vue}' --fix && stylelint 'src/**/*.{css,less}' --fix",
+    "prettier": "prettier --write '**/*.{js,vue,css,less,html,md,json}'"
+  },
+  "devDependencies": {
+    "@jdd/cli-plugin-babel": "^1.0.14",
+    "@jdd/cli-plugin-vue": "^1.0.14",
+    "@jdd/cli-service": "^1.0.14",
+    "cross-env": "7.0.3",
+    "postcss": "8.2.8",
+    "postcss-load-config": "3.0.0",
+    "postcss-import": "14.0.0",
+    "cssnano": "4.1.10",
+    "autoprefixer": "10.2.5",
+    "eslint": "7.21.0",
+    "stylelint": "13.11.0",
+    "stylelint-config-standard": "20.0.0",
+    "stylelint-config-recess-order": "2.1.0",
+    "stylelint-prettier": "1.1.2",
+    "stylelint-config-prettier": "8.0.2",
+    "@commitlint/cli": "11.0.0",
+    "@commitlint/config-conventional": "11.0.0",
+    "husky": "4.3.8",
+    "lint-staged": "10.5.4",
+    "prettier": "2.2.1",
+    "eslint-plugin-prettier": "3.1.4",
+    "eslint-config-prettier": "8.1.0",
+    "babel-eslint": "10.1.0",
+    "eslint-plugin-vue": "7.7.0"
+  },
+  "postcss": {
+    "plugins": {
+      "postcss-import": {},
+      "cssnano": {},
+      "autoprefixer": {}
+    }
+  },
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-conventional"
+    ]
+  },
+  "husky": {
+    "hooks": {
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS",
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.{js,vue,css,less,html,md,json}": [
+      "prettier --write"
+    ],
+    "*.{js,vue}": [
+      "eslint --fix"
+    ],
+    "*.{css,less}": [
+      "stylelint --fix"
+    ]
+  },
+  "eslintConfig": {
+    "root": true,
+    "parserOptions": {
+      "ecmaVersion": 6,
+      "sourceType": "module",
+      "ecmaFeatures": {
+        "modules": true
+      },
+      "parser": "babel-eslint"
+    },
+    "env": {
+      "browser": true,
+      "node": true
+    },
+    "globals": {
+      "document": true,
+      "localStorage": true,
+      "window": true
+    },
+    "plugins": [
+      "prettier"
+    ],
+    "rules": {
+      "prettier/prettier": "error"
+    },
+    "extends": [
+      "eslint:recommended",
+      "plugin:vue/recommended",
+      "prettier"
+    ]
+  },
+  "stylelint": {
+    "extends": [
+      "stylelint-config-standard",
+      "stylelint-config-recess-order",
+      "stylelint-prettier/recommended"
+    ]
+  },
+  "dependencies": {
+    "vue": "2.6.12",
+    "vue-router": "3.5.1",
+    "vuex": "3.6.2",
+    "core-js": "3.9.1"
+  }
+}

@@ -3,7 +3,7 @@ import { checkPackage } from './utils/check-package'
 import { privatePackage } from './package'
 import { readFile } from './utils'
 
-const action = async (scopeName) => {
+const action = async (scopeName: string) => {
   try {
     // 读取包package.json文件
     let packageJson = readFile()

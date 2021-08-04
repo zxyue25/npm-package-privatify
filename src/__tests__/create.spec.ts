@@ -1,9 +1,8 @@
-// import create from '../commands/create'
+import createAction from '../commands/create'
 
-// describe('创建私服仓库', () => {
-//   test('创建私服仓库', async () => {
-//     await create.action("projectName")
-//   })
-// })
-
-console.log('ddd')
+describe('privatify create', () => {
+  test('创建私服仓库', async () => {
+    const projectName = '_test-pro1'
+    await createAction.action(projectName)
+  })
+})

@@ -99,7 +99,7 @@ const zipPackage = async (packageName, version) => {
   chalk.green(`私有化处理完成 ${packageName}`)
 }
 
-const action = async (packageName, scopeName) => {
+const action = async (packageName: string, scopeName?: string) => {
   try {
     await privatePackage(packageName, scopeName)
   } catch (err) {

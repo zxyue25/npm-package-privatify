@@ -70,7 +70,7 @@ const checkProjectExist = async (targetDir) => {
       choices: ['覆盖', '取消'],
     })
     if (answer.checkExist === '覆盖') {
-      warn(`删除${chalk.cyan(targetDir)}...`)
+      warn(`删除${targetDir}...`)
       fs.removeSync(targetDir)
     } else {
       return true
@@ -79,7 +79,7 @@ const checkProjectExist = async (targetDir) => {
   return false
 }
 
-const action = async (projectName) => {
+const action = async (projectName: string) => {
   try {
     const targetDir = path.join(cwd, projectName)
     if (!(await checkProjectExist(targetDir))) {

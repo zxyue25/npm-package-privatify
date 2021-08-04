@@ -1,0 +1,12 @@
+a {
+  color: #eee;
+}
+
+.bottom {
+  height: 30px;
+  line-height: 30px;
+  width: 200px;
+}
+.bottom .copyright {
+  color: #666;
+}
