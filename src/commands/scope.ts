@@ -1,4 +1,4 @@
-import { chalk } from '../lib'
+import { error } from '../lib'
 import { checkPackage } from './utils/check-package'
 import { privatePackage } from './package'
 import { readFile } from './utils'
@@ -15,7 +15,7 @@ const action = async (scopeName) => {
       }
     }
   } catch (err) {
-    console.log(chalk.red(err))
+    error(err)
   }
 }
 

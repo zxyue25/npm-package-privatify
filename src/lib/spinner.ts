@@ -4,7 +4,7 @@ import * as chalk from 'chalk'
 const spinner = ora()
 
 export const startSpinner = (text?: string) => {
-  const msg = chalk.yellow(`${text} ...\n`)
+  const msg = `${text}...\n`
   spinner.start(msg)
   spinner.stopAndPersist({
     symbol: '✨',
@@ -15,7 +15,7 @@ export const startSpinner = (text?: string) => {
 export const succeedSpiner = (text?: string) => {
   spinner.stopAndPersist({
     symbol: '🎉',
-    text: chalk.green(text)
+    text: `${text}\n`
   })
 }
 

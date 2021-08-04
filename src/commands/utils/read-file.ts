@@ -7,6 +7,6 @@ export const readFile = (
   fileName: string = 'package.json'
 ) => {
   const data = fs.readFileSync(path.join(cwd, filePath, fileName), 'utf8')
-  const json = JSON.parse(data)
-  return json
+  const packageJson = JSON.parse(data)
+  return packageJson
 }

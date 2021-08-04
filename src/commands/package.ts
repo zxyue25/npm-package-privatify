@@ -9,26 +9,28 @@ import {
   startSpinner,
   succeedSpiner,
   failSpinner,
+  info,
 } from '../lib'
 import { checkPackage, readFile, tarGz } from './utils'
 
-// 安装私有包
+// 将私有包及私有子包离线化
 export const privatePackage = async (packageName, scopeName) => {
   startSpinner(`开始下载包 ${packageName}`)
   execa.commandSync(`npm install ${packageName}`, {
     stdio: 'inherit',
     cwd,
   })
-  succeedSpiner(`包下载完成 ${chalk.yellow(packageName)}`)
+  succeedSpiner(`包下载完成 ${packageName}`)
   await updatePackage(packageName, scopeName)
 }
 
-// 将私有包及私有子包离线化
+// 更新包package.json信息，复制、压缩文件等
 const updatePackage = async (
   packageName,
   scopeName,
   parentPackagePath = ''
 ) => {
+  startSpinner(`开始离线化 ${packageName}`)
   fs.removeSync(path.join(cwd, targetFile, packageName))
   // 复制包从node_modules到targetFile
   fs.copySync(
@@ -38,17 +40,25 @@ const updatePackage = async (
   // 读取包package.json文件
   const packageJson = readFile(`${targetFile}/${packageName}`)
   if (scopeName) {
-    // 检查package的子包是否有scope下的私有包
+    // 检查package的依赖子包是否有scope下的私有包
     const subPackages = checkPackage(packageJson, scopeName)
     if (subPackages) {
       const copyedPackages =
-        (globby as any).sync(`./${scopeName}`, {
+        (globby as any).sync(`${scopeName}`, {
           cwd: path.join(cwd, targetFile),
           deep: 1,
         }) || []
       for (const subPackage of subPackages) {
-        if (!copyedPackages.includes(subPackage)) {
-          await updatePackage(subPackage, scopeName, `${targetFile}/${packageName}`)
+        const subPackageJson = readFile(`node_modules/${subPackage}`)
+        const { version } = subPackageJson
+        if (!copyedPackages.includes(`${subPackage}-${version}.tar.gz`)) {
+          await updatePackage(
+            subPackage,
+            scopeName,
+            `${targetFile}/${packageName}`
+          )
+        } else {
+          info(`检测到${subPackage}-${version}已处理`)
         }
       }
     }
@@ -56,6 +66,9 @@ const updatePackage = async (
   const { version } = packageJson
   // 更新包的package.json
   await updatePackageJson(packageName, version, parentPackagePath)
+  // 压缩包
+  await zipPackage(packageName, version)
+  succeedSpiner(`包离线化完成 ${packageName}`)
 }
 
 // 更新package.json文件
@@ -74,7 +87,6 @@ const updatePackageJson = async (packageName, version, parentPackagePath) => {
     JSON.stringify(packageJson, null, 4),
     'utf8'
   )
-  await zipPackage(packageName, version)
 }
 
 // 在targetFile目录下压缩package为${packageName}.${version}.tar.gz，删除package
@@ -94,7 +106,6 @@ const action = async (packageName, scopeName) => {
     failSpinner(err)
     return
   }
-  console.log(chalk.green(`\n完成包离线处理 ${packageName}`))
 }
 
 export default {
