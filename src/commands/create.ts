@@ -35,7 +35,7 @@ const checkProjectExist = async (targetDir) => {
 
 const action = async (projectName: string, cmdArgs?: any) => {
   try {
-    const targetDir = path.join(cmdArgs.context || cwd, projectName)
+    const targetDir = path.join(cmdArgs && cmdArgs.context || cwd, projectName)
     if (!(await checkProjectExist(targetDir))) {
       startSpinner(`开始创建私服仓库 ${chalk.cyan(targetDir)}`)
       // 复制'private-server-boilerplate'到目标路径下创建工程
