@@ -13,14 +13,17 @@ import {
 } from '../lib'
 import { checkPackage, readFile, tarGz } from './utils'
 
+let targetDir = ''
+
 // 将私有包及私有子包离线化
 export const privatePackage = async (packageName, scopeName) => {
   startSpinner(`开始下载包 ${packageName}`)
   execa.commandSync(`npm install ${packageName}`, {
     stdio: 'inherit',
-    cwd,
+    cwd: targetDir,
   })
   succeedSpiner(`包下载完成 ${packageName}`)
+  fs.removeSync(path.join(targetDir, targetFile, '@jdd/cli-service-1.0.14.tar.gz'))
   await updatePackage(packageName, scopeName)
 }
 
@@ -31,25 +34,25 @@ const updatePackage = async (
   parentPackagePath = ''
 ) => {
   startSpinner(`开始离线化 ${packageName}`)
-  fs.removeSync(path.join(cwd, targetFile, packageName))
+  fs.removeSync(path.join(targetDir, targetFile, packageName))
   // 复制包从node_modules到targetFile
   fs.copySync(
-    path.join(cwd, 'node_modules', packageName),
-    path.join(cwd, targetFile, packageName)
+    path.join(targetDir, 'node_modules', packageName),
+    path.join(targetDir, targetFile, packageName)
   )
   // 读取包package.json文件
-  const packageJson = readFile(`${targetFile}/${packageName}`)
+  const packageJson = readFile(`${targetDir}/${targetFile}/${packageName}`)
   if (scopeName) {
     // 检查package的依赖子包是否有scope下的私有包
     const subPackages = checkPackage(packageJson, scopeName)
     if (subPackages) {
       const copyedPackages =
         (globby as any).sync(`${scopeName}`, {
-          cwd: path.join(cwd, targetFile),
+          cwd: path.join(targetDir, targetFile),
           deep: 1,
         }) || []
       for (const subPackage of subPackages) {
-        const subPackageJson = readFile(`node_modules/${subPackage}`)
+        const subPackageJson = readFile(`${targetDir}/node_modules/${subPackage}`)
         const { version } = subPackageJson
         if (!copyedPackages.includes(`${subPackage}-${version}.tar.gz`)) {
           await updatePackage(
@@ -74,7 +77,7 @@ const updatePackage = async (
 // 更新package.json文件
 const updatePackageJson = async (packageName, version, parentPackagePath) => {
   const filePath = parentPackagePath ? '../../' : ''
-  const packageJson = readFile(parentPackagePath)
+  const packageJson = readFile(`${targetDir}/${parentPackagePath}`)
   const packagePath = `file:${filePath}${targetFile}/${packageName}-${version}.tar.gz`
   if (packageJson.dependencies && packageJson.dependencies[packageName]) {
     packageJson.dependencies[packageName] = packagePath
@@ -83,7 +86,7 @@ const updatePackageJson = async (packageName, version, parentPackagePath) => {
     packageJson.devDependencies[packageName] = packagePath
   }
   fs.writeFileSync(
-    path.join(cwd, parentPackagePath, 'package.json'),
+    path.join(targetDir, parentPackagePath, 'package.json'),
     JSON.stringify(packageJson, null, 4),
     'utf8'
   )
@@ -95,12 +98,17 @@ const zipPackage = async (packageName, version) => {
   const name = packageNames[packageNames.length - 1]
   packageNames.pop()
   const packagePath = packageNames.join('/')
-  await tarGz(packagePath, name, version)
+  await tarGz(packagePath, name, version, targetDir)
   chalk.green(`私有化处理完成 ${packageName}`)
 }
 
-const action = async (packageName: string, scopeName?: string) => {
+const action = async (
+  packageName: string,
+  scopeName?: string,
+  cmdArgs?: any
+) => {
   try {
+    targetDir = cmdArgs && cmdArgs.context || cwd
     await privatePackage(packageName, scopeName)
   } catch (err) {
     failSpinner(err)
