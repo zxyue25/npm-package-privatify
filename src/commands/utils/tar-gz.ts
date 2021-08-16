@@ -6,9 +6,10 @@ import * as compressing from 'compressing'
 export const tarGz = async (
   filePath,
   fileName,
-  fileVersion
+  fileVersion,
+  preFile?
 ) => {
-  const packagePath = `${targetFile}/${filePath}`
+  const packagePath = `${preFile}/${targetFile}/${filePath}`
   const zipFileName = fileVersion ? `${fileName}-${fileVersion}` : fileName
   await compressing.tar.compressDir(
     path.join(cwd, packagePath, fileName),
