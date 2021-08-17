@@ -18,7 +18,7 @@ test('压缩', async () => {
           __dirname,
           './project-demo',
           targetFile,
-          '@babel/code-frame-1.0.1-tar.gz'
+          '@babel/code-frame-1.0.1.tar.gz'
         )
       )
     ).toBeTruthy()

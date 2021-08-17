@@ -41,20 +41,16 @@ describe('privatify scope', () => {
     }
   })
   test('从本地安装@jdd/cli-service', async () => {
-    execa.commandSync(`npm install`, {
+    execa.commandSync(`npm install @jdd/cli-service`, {
       stdio: 'inherit',
       cwd: targetFile,
     })
   })
-})
-
-afterAll(() => {
-  execa.commandSync(
-    'git checkout src/__tests__/project-demo/package*.json',
-    {
+  afterAll(() => {
+    execa.commandSync('git checkout src/__tests__/project-demo/package*.json', {
       stdio: 'inherit',
       cwd,
-    }
-  )
-  fs.removeSync(path.join(targetFile, 'private'))
+    })
+    fs.removeSync(path.join(targetFile, 'private'))
+  })
 })

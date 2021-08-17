@@ -11,7 +11,7 @@ describe('privatify package <package-name>', () => {
   })
 
   test('将@jdd/cli-service包处理为离线包', async () => {
-    expect.assertions(1)
+    expect.assertions(2)
     try {
       await packageAction.action(packageName, '', { context: targetFile })
       expect(
@@ -50,7 +50,7 @@ describe('privatify package <package-name> [scope]', () => {
   })
 
   test('将@jdd/cli-service @jdd/*处理为离线包', async () => {
-    expect.assertions(1)
+    expect.assertions(3)
     try {
       await packageAction.action(packageName, '@jdd/*', { context: targetFile })
       expect(
