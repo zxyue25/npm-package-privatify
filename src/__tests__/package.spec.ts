@@ -36,7 +36,7 @@ describe('privatify package <package-name>', () => {
   })
 
   afterAll(() => {
-    execa.commandSync(`git checkout src/__tests__/project-demo/package.json && git checkout src/__tests__/project-demo/package-lock.json`, {
+    execa.commandSync('git checkout src/__tests__/project-demo/package*.json', {
       stdio: 'inherit',
       cwd,
     })
@@ -84,7 +84,7 @@ describe('privatify package <package-name> [scope]', () => {
   })
 
   afterAll(() => {
-    execa.commandSync(`git checkout src/__tests__/project-demo/package.json && git checkout src/__tests__/project-demo/package-lock.json`, {
+    execa.commandSync('git checkout src/__tests__/project-demo/package*.json', {
       stdio: 'inherit',
       cwd,
     })

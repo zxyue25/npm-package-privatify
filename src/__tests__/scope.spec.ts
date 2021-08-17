@@ -46,14 +46,15 @@ describe('privatify scope', () => {
       cwd: targetFile,
     })
   })
-  afterAll(() => {
-    execa.commandSync(
-      'git checkout src/__tests__/project-demo/package.json && git checkout src/__tests__/project-demo/package-lock.json',
-      {
-        stdio: 'inherit',
-        cwd,
-      }
-    )
-    fs.removeSync(path.join(targetFile, 'private'))
-  })
+})
+
+afterAll(() => {
+  execa.commandSync(
+    'git checkout src/__tests__/project-demo/package*.json',
+    {
+      stdio: 'inherit',
+      cwd,
+    }
+  )
+  fs.removeSync(path.join(targetFile, 'private'))
 })
