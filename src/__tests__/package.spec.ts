@@ -18,7 +18,7 @@ describe('privatify package <package-name>', () => {
         fs.existsSync(
           path.join(targetFile, 'private', '@jdd/cli-service-1.0.14.tar.gz')
         )
-      )
+      ).toBeTruthy()
       const packageJson = readFile(path.join(__dirname, './project-demo'))
       expect(packageJson.devDependencies['@jdd/cli-service']).toBe(
         'file:private/@jdd/cli-service-1.0.14.tar.gz'
@@ -57,7 +57,7 @@ describe('privatify package <package-name> [scope]', () => {
         fs.existsSync(
           path.join(targetFile, 'private', '@jdd/cli-service-1.0.14.tar.gz')
         )
-      )
+      ).toBeTruthy()
       expect(
         fs.existsSync(
           path.join(
@@ -66,7 +66,7 @@ describe('privatify package <package-name> [scope]', () => {
             '@jdd/cli-shared-utils-1.0.14.tar.gz'
           )
         )
-      )
+      ).toBeTruthy()
       const packageJson = readFile(path.join(__dirname, './project-demo'))
       expect(packageJson.devDependencies['@jdd/cli-service']).toBe(
         'file:private/@jdd/cli-service-1.0.14.tar.gz'
