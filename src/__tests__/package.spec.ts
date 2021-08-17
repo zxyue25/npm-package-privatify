@@ -40,6 +40,7 @@ describe('privatify package <package-name>', () => {
       stdio: 'inherit',
       cwd,
     })
+    fs.removeSync(path.join(targetFile, 'private'))
   })
 })
 
@@ -47,7 +48,7 @@ describe('privatify package <package-name> [scope]', () => {
   beforeAll(() => {
     fs.removeSync(path.join(targetFile, 'private'))
   })
-
+  
   test('将@jdd/cli-service @jdd/*处理为离线包', async () => {
     expect.assertions(1)
     try {
@@ -87,5 +88,6 @@ describe('privatify package <package-name> [scope]', () => {
       stdio: 'inherit',
       cwd,
     })
+    fs.removeSync(path.join(targetFile, 'private'))
   })
 })
