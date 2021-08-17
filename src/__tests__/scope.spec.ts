@@ -1,6 +1,6 @@
 import scopeAction from '../commands/scope'
 import * as path from 'path'
-import { fs } from '../lib'
+import { execa, fs, cwd } from '../lib'
 const targetFile = path.join(__dirname, './project-demo')
 
 describe('privatify scope', () => {
@@ -24,16 +24,36 @@ describe('privatify scope', () => {
       await scopeAction.action(scopeName, { context: targetFile })
       expect(
         fs.existsSync(
-          path.join(targetFile, 'private', 'jdd/cli-shared-utils-1.0.14.tar.gz')
+          path.join(
+            targetFile,
+            'private',
+            '@jdd/cli-shared-utils-1.0.14.tar.gz'
+          )
         )
       ).toBeTruthy()
       expect(
         fs.existsSync(
-          path.join(targetFile, 'private', 'jdd/cli-service-1.0.14.tar.gz')
+          path.join(targetFile, 'private', '@jdd/cli-service-1.0.14.tar.gz')
         )
       ).toBeTruthy()
     } catch (e) {
       console.log(e)
     }
+  })
+  test('从本地安装@jdd/cli-service', async () => {
+    execa.commandSync(`npm install`, {
+      stdio: 'inherit',
+      cwd: targetFile,
+    })
+  })
+  afterAll(() => {
+    execa.commandSync(
+      'git checkout src/__tests__/project-demo/package.json && git checkout src/__tests__/project-demo/package-lock.json',
+      {
+        stdio: 'inherit',
+        cwd,
+      }
+    )
+    fs.removeSync(path.join(targetFile, 'private'))
   })
 })
