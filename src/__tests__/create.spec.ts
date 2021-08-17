@@ -21,7 +21,7 @@ describe('privatify create', () => {
     }
     try {
       await cloneProject(targetDir, projectName, projectInfo)
-      expect(fs.ensureDir(targetDir)).toBeTruthy()
+      expect(fs.existsSync(targetDir)).toBeTruthy()
       const packageJson = readFile('src/__tests__/_test-pro1')
       expect(packageJson.name).toBe(projectInfo.name)
       expect(packageJson.description).toBe(projectInfo.description)

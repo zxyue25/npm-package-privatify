@@ -1,17 +1,20 @@
-import { error } from '../lib'
+import { cwd, error } from '../lib'
 import { checkPackage } from './utils/check-package'
 import { privatePackage } from './package'
 import { readFile } from './utils'
 
-const action = async (scopeName: string) => {
+   
+
+const action = async (scopeName: string, cmdArgs?: any) => {
   try {
+    const targetDir = cmdArgs && cmdArgs.context || cwd
     // 读取包package.json文件
     let packageJson = readFile()
     // 检查依赖包是否有scope下的私有包
     const targetPackages = checkPackage(packageJson, scopeName)
     if (targetPackages) {
       for (const targetPackage of targetPackages) {
-        await privatePackage(targetPackage, scopeName)
+        await privatePackage(targetPackage, scopeName, targetDir)
       }
     }
   } catch (err) {

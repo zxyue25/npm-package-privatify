@@ -13,7 +13,7 @@ test('压缩', async () => {
   try {
     await tarGz('@babel', 'code-frame', '1.0.1', 'src/__tests__/project-demo')
     expect(
-      fs.ensureDir(
+      fs.existsSync(
         path.join(
           __dirname,
           './project-demo',

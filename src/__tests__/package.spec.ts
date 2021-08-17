@@ -15,7 +15,7 @@ describe('privatify package <package-name>', () => {
     try {
       await packageAction.action(packageName, '', { context: targetFile })
       expect(
-        fs.ensureDir(
+        fs.existsSync(
           path.join(targetFile, 'private', '@jdd/cli-service-1.0.14.tar.gz')
         )
       )
@@ -54,12 +54,12 @@ describe('privatify package <package-name> [scope]', () => {
     try {
       await packageAction.action(packageName, '@jdd/*', { context: targetFile })
       expect(
-        fs.ensureDir(
+        fs.existsSync(
           path.join(targetFile, 'private', '@jdd/cli-service-1.0.14.tar.gz')
         )
       )
       expect(
-        fs.ensureDir(
+        fs.existsSync(
           path.join(
             targetFile,
             'private',

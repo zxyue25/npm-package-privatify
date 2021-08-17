@@ -13,25 +13,23 @@ import {
 } from '../lib'
 import { checkPackage, readFile, tarGz } from './utils'
 
-let targetDir = ''
-
 // 将私有包及私有子包离线化
-export const privatePackage = async (packageName, scopeName) => {
+export const privatePackage = async (packageName, scopeName, targetDir) => {
   startSpinner(`开始下载包 ${packageName}`)
   execa.commandSync(`npm install ${packageName}`, {
     stdio: 'inherit',
     cwd: targetDir,
   })
   succeedSpiner(`包下载完成 ${packageName}`)
-  fs.removeSync(path.join(targetDir, targetFile, '@jdd/cli-service-1.0.14.tar.gz'))
-  await updatePackage(packageName, scopeName)
+  await updatePackage(packageName, scopeName, '', targetDir)
 }
 
 // 更新包package.json信息，复制、压缩文件等
 const updatePackage = async (
   packageName,
   scopeName,
-  parentPackagePath = ''
+  parentPackagePath = '',
+  targetDir
 ) => {
   startSpinner(`开始离线化 ${packageName}`)
   fs.removeSync(path.join(targetDir, targetFile, packageName))
@@ -58,7 +56,8 @@ const updatePackage = async (
           await updatePackage(
             subPackage,
             scopeName,
-            `${targetFile}/${packageName}`
+            `${targetFile}/${packageName}`,
+            targetDir
           )
         } else {
           info(`检测到${subPackage}-${version}已处理`)
@@ -68,14 +67,14 @@ const updatePackage = async (
   }
   const { version } = packageJson
   // 更新包的package.json
-  await updatePackageJson(packageName, version, parentPackagePath)
+  await updatePackageJson(packageName, version, parentPackagePath, targetDir)
   // 压缩包
-  await zipPackage(packageName, version)
+  await zipPackage(packageName, version, targetDir)
   succeedSpiner(`包离线化完成 ${packageName}`)
 }
 
 // 更新package.json文件
-const updatePackageJson = async (packageName, version, parentPackagePath) => {
+const updatePackageJson = async (packageName, version, parentPackagePath, targetDir) => {
   const filePath = parentPackagePath ? '../../' : ''
   const packageJson = readFile(`${targetDir}/${parentPackagePath}`)
   const packagePath = `file:${filePath}${targetFile}/${packageName}-${version}.tar.gz`
@@ -93,7 +92,7 @@ const updatePackageJson = async (packageName, version, parentPackagePath) => {
 }
 
 // 在targetFile目录下压缩package为${packageName}.${version}.tar.gz，删除package
-const zipPackage = async (packageName, version) => {
+const zipPackage = async (packageName, version, targetDir) => {
   const packageNames = packageName.split('/')
   const name = packageNames[packageNames.length - 1]
   packageNames.pop()
@@ -108,8 +107,8 @@ const action = async (
   cmdArgs?: any
 ) => {
   try {
-    targetDir = cmdArgs && cmdArgs.context || cwd
-    await privatePackage(packageName, scopeName)
+    const targetDir = cmdArgs && cmdArgs.context || cwd
+    await privatePackage(packageName, scopeName, targetDir)
   } catch (err) {
     failSpinner(err)
     return
