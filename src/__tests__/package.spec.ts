@@ -48,7 +48,7 @@ describe('privatify package <package-name> [scope]', () => {
   beforeAll(() => {
     fs.removeSync(path.join(targetFile, 'private'))
   })
-  
+
   test('将@jdd/cli-service @jdd/*处理为离线包', async () => {
     expect.assertions(1)
     try {
@@ -69,7 +69,7 @@ describe('privatify package <package-name> [scope]', () => {
       )
       const packageJson = readFile(path.join(__dirname, './project-demo'))
       expect(packageJson.devDependencies['@jdd/cli-service']).toBe(
-        '../../file:private/@jdd/cli-service-1.0.14.tar.gz'
+        'file:private/@jdd/cli-service-1.0.14.tar.gz'
       )
     } catch (e) {
       console.log(e)
