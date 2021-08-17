@@ -6,6 +6,10 @@ const targetFile = path.join(__dirname, './project-demo')
 const packageName = '@jdd/cli-service'
 
 describe('privatify package <package-name>', () => {
+  beforeAll(() => {
+    fs.removeSync(path.join(targetFile, 'private'))
+  })
+
   test('将@jdd/cli-service包处理为离线包', async () => {
     expect.assertions(1)
     try {
@@ -40,13 +44,26 @@ describe('privatify package <package-name>', () => {
 })
 
 describe('privatify package <package-name> [scope]', () => {
-  test('将@jdd/cli-service包处理为离线包', async () => {
-    expect.assertions(2)
+  beforeAll(() => {
+    fs.removeSync(path.join(targetFile, 'private'))
+  })
+
+  test('将@jdd/cli-service @jdd/*处理为离线包', async () => {
+    expect.assertions(1)
     try {
       await packageAction.action(packageName, '@jdd/*', { context: targetFile })
       expect(
         fs.ensureDir(
           path.join(targetFile, 'private', '@jdd/cli-service-1.0.14.tar.gz')
+        )
+      )
+      expect(
+        fs.ensureDir(
+          path.join(
+            targetFile,
+            'private',
+            '@jdd/cli-shared-utils-1.0.14.tar.gz'
+          )
         )
       )
       const packageJson = readFile(path.join(__dirname, './project-demo'))
