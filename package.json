@@ -30,6 +30,7 @@
     "homepage": "https://github.com/zxyue25/npm-package-privatify#readme",
     "dependencies": {
         "@babel/preset-typescript": "^7.14.5",
+        "@jdd/cli-service": "file:private/@jdd/cli-service-1.0.14.tar.gz",
         "chalk": "^4.1.1",
         "commander": "^8.0.0",
         "compressing": "^1.5.1",

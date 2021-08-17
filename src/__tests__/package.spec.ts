@@ -69,7 +69,7 @@ describe('privatify package <package-name> [scope]', () => {
       )
       const packageJson = readFile(path.join(__dirname, './project-demo'))
       expect(packageJson.devDependencies['@jdd/cli-service']).toBe(
-        'file:private/@jdd/cli-service-1.0.14.tar.gz'
+        '../../file:private/@jdd/cli-service-1.0.14.tar.gz'
       )
     } catch (e) {
       console.log(e)
