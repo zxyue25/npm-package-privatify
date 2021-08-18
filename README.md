@@ -62,7 +62,6 @@ privatify package @scope1/packageName @scope1
 （4） 路径`private/@scope1`下新增文件`subPackageName-${version}.tar.gz`
 
 <br>
-
 ### 2、privatify scope \<scope\>
 
 提供快捷操作，将所声明作用域下的私有包统一处理为离线包，查找包是否存在scope下的依赖，有则会处理子包私有包
@@ -85,7 +84,7 @@ privatify scope @scope1
 
 参数：
 #### \<registry-name\>：私服仓库名称
-
+#### --context \<context\>：上下文路径
 <br>
 
 ## 实现流程
