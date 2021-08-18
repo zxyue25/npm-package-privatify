@@ -7,7 +7,7 @@ const targetDir = path.join(__dirname, './_test-pro1')
 
 describe('privatify create', () => {
 
-  beforeEach(() => {
+  beforeAll(() => {
     fs.remove(targetDir)
   })
 
@@ -31,7 +31,7 @@ describe('privatify create', () => {
     }
   })
 
-  afterEach(() => {
+  afterAll(() => {
     fs.remove(targetDir)
   })
 
