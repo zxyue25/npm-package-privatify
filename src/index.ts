@@ -14,7 +14,7 @@ const getCommand = () => {
 
 function start() {
   const commandsPath = getCommand()
-  program.version('0.1.0')
+  program.version('1.1.4')
   commandsPath.forEach((commandPath) => {
     const commandObj = require(`./${commandPath}`)
     const { command, description, optionList, action } = commandObj.default
