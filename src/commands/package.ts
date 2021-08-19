@@ -9,7 +9,6 @@ import {
   startSpinner,
   succeedSpiner,
   failSpinner,
-  info,
 } from '../lib'
 import { checkPackage, readFile, tarGz } from './utils'
 
@@ -44,24 +43,13 @@ const updatePackage = async (
     // 检查package的依赖子包是否有scope下的私有包
     const subPackages = checkPackage(packageJson, scopeName)
     if (subPackages) {
-      const copyedPackages =
-        (globby as any).sync(`${scopeName}`, {
-          cwd: path.join(targetDir, targetFile),
-          deep: 1,
-        }) || []
       for (const subPackage of subPackages) {
-        const subPackageJson = readFile(`${targetDir}/node_modules/${subPackage}`)
-        const { version } = subPackageJson
-        if (!copyedPackages.includes(`${subPackage}-${version}.tar.gz`)) {
-          await updatePackage(
-            subPackage,
-            scopeName,
-            `${targetFile}/${packageName}`,
-            targetDir
-          )
-        } else {
-          info(`检测到${subPackage}-${version}已处理`)
-        }
+        await updatePackage(
+          subPackage,
+          scopeName,
+          `${targetFile}/${packageName}`,
+          targetDir
+        )
       }
     }
   }
@@ -74,7 +62,12 @@ const updatePackage = async (
 }
 
 // 更新package.json文件
-const updatePackageJson = async (packageName, version, parentPackagePath, targetDir) => {
+const updatePackageJson = async (
+  packageName,
+  version,
+  parentPackagePath,
+  targetDir
+) => {
   const filePath = parentPackagePath ? '../../' : ''
   const packageJson = readFile(`${targetDir}/${parentPackagePath}`)
   const packagePath = `file:${filePath}${targetFile}/${packageName}-${version}.tar.gz`
@@ -107,7 +100,7 @@ const action = async (
   cmdArgs?: any
 ) => {
   try {
-    const targetDir = cmdArgs && cmdArgs.context || cwd
+    const targetDir = (cmdArgs && cmdArgs.context) || cwd
     await privatePackage(packageName, scopeName, targetDir)
   } catch (err) {
     failSpinner(err)

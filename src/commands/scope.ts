@@ -3,8 +3,6 @@ import { checkPackage } from './utils/check-package'
 import { privatePackage } from './package'
 import { readFile } from './utils'
 
-   
-
 const action = async (scopeName: string, cmdArgs?: any) => {
   try {
     const targetDir = cmdArgs && cmdArgs.context || cwd
