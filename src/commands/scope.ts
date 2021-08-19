@@ -9,7 +9,7 @@ const action = async (scopeName: string, cmdArgs?: any) => {
   try {
     const targetDir = cmdArgs && cmdArgs.context || cwd
     // 读取包package.json文件
-    let packageJson = readFile()
+    let packageJson = readFile(targetDir)
     // 检查依赖包是否有scope下的私有包
     const targetPackages = checkPackage(packageJson, scopeName)
     if (targetPackages) {
