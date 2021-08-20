@@ -67,6 +67,7 @@ export const cloneProject = async (targetDir, projectName, projectInfo) => {
   const jsonResult = handlebars.compile(jsonContent)(projectInfo)
   fs.writeFileSync(jsonPath, jsonResult)
 
+  // TODO: install换为copy
   // 新建工程装包
   execa.commandSync('npm install', {
     stdio: 'inherit',

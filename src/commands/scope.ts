@@ -11,6 +11,7 @@ const action = async (scopeName: string, cmdArgs?: any) => {
     // 检查依赖包是否有scope下的私有包
     const targetPackages = checkPackage(packageJson, scopeName)
     if (targetPackages) {
+      // TODO: 串行
       for (const targetPackage of targetPackages) {
         await privatePackage(targetPackage, scopeName, targetDir)
       }
