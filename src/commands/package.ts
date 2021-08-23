@@ -15,6 +15,7 @@ import { checkPackage, readFile, tarGz } from './utils'
 // 将私有包及私有子包离线化
 export const privatePackage = async (packageName, scopeName, targetDir) => {
   startSpinner(`开始下载包 ${packageName}`)
+  // TODO: 检测node_modules是否有packageName
   execa.commandSync(`npm install ${packageName}`, {
     stdio: 'inherit',
     cwd: targetDir,

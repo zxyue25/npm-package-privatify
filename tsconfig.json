@@ -18,7 +18,14 @@
     "outDir": "./build",
     "rootDir": "./src"
   },
-  "exclude": ["node_modules", "build", "**/*.test.ts", "temp", "scripts", "./src/__tests__"],
+  "exclude": [
+    "node_modules",
+    "build",
+    "**/*.test.ts",
+    "temp",
+    "scripts",
+    "./src/__tests__"
+  ],
   "esModuleInterop": true,
   "allowSyntheticDefaultImports": true,
   "compileOnSave": false,

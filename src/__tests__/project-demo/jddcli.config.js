@@ -3,7 +3,7 @@ module.exports = {
   devServer: {
     host: '0.0.0.0',
     port: '10015',
-    stats: 'errors-warnings'
+    stats: 'errors-warnings',
   },
   options: {
     name: 'project-demo',
@@ -11,9 +11,9 @@ module.exports = {
     jsProcessor: 'babel',
     cssProcessor: 'less',
     useLocalConfig: [],
-    plugins: []
+    plugins: [],
   },
   pluginOptions: {},
   ENVS: {},
-  extend: ''
-}
+  extend: '',
+};

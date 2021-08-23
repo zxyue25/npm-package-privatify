@@ -14,22 +14,15 @@ const getCommand = () => {
 
 function start() {
   const commandsPath = getCommand()
-  program.version('0.1.0')
+  program.version('1.1.4')
   commandsPath.forEach((commandPath) => {
     const commandObj = require(`./${commandPath}`)
     const { command, description, optionList, action } = commandObj.default
-    // console.log(optionList)
-    const options =
-      optionList &&
-      optionList.map((option) => {
-        return `.option(${option[0]},${option[1]})`
-      })
-
-    // console.log(options)
     const curp = program
       .command(command)
       .description(description)
       .action(action)
+
     optionList &&
       optionList.map((option: [string]) => {
         curp.option(...option)
